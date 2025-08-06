@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36212.18
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MFashionStoreAPI", "PrintSpace\MFashionStoreAPI.csproj", "{0EEB06EE-55B5-471D-B75B-DCAD556CF725}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessObject", "DataAccessLayer\DataAccessObject.csproj", "{8E46A03E-64B1-4106-961F-1A93CADDF296}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLogicLayer", "BusinessLogicLayer\BusinessLogicLayer.csproj", "{C4E1C879-F06A-41FB-B3B6-6B4FC7D66718}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{38A6E20E-395F-47BC-A8DD-C81F0F916DC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MFashionStoreAPI", "MFashionStoreAPI\MFashionStoreAPI.csproj", "{DBE9CE49-72C1-3AF0-3F33-C467903C9317}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0EEB06EE-55B5-471D-B75B-DCAD556CF725}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0EEB06EE-55B5-471D-B75B-DCAD556CF725}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0EEB06EE-55B5-471D-B75B-DCAD556CF725}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0EEB06EE-55B5-471D-B75B-DCAD556CF725}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8E46A03E-64B1-4106-961F-1A93CADDF296}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8E46A03E-64B1-4106-961F-1A93CADDF296}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E46A03E-64B1-4106-961F-1A93CADDF296}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{38A6E20E-395F-47BC-A8DD-C81F0F916DC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38A6E20E-395F-47BC-A8DD-C81F0F916DC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38A6E20E-395F-47BC-A8DD-C81F0F916DC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBE9CE49-72C1-3AF0-3F33-C467903C9317}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBE9CE49-72C1-3AF0-3F33-C467903C9317}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBE9CE49-72C1-3AF0-3F33-C467903C9317}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBE9CE49-72C1-3AF0-3F33-C467903C9317}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
