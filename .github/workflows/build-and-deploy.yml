@@ -67,4 +67,4 @@ jobs:
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
           local-dir: ${{ env.PUBLISH_DIR }}/
-          server-dir: /www.mfashionstore.somee.com
+          server-dir: /www.mfashionstore.somee.com/
