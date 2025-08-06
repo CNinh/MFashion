@@ -25,6 +25,11 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
+      - name: Generate appsettings.json from secret
+        run: |
+          mkdir -p ${{ env.API_PROJECT_PATH }}
+          echo '${{ secrets.APPSETTINGS_JSON }}' > ${{ env.API_PROJECT_PATH }}/appsettings.json
+
       - name: Restore
         run: dotnet restore ${{ env.SOLUTION_PATH }}
 
@@ -33,9 +38,6 @@ jobs:
 
       - name: Test
         run: dotnet test ${{ env.SOLUTION_PATH }} --configuration Release --no-restore --no-build --verbosity normal
-
-      - name: Generate appsettings.json from secret
-        run: echo '${{ secrets.APPSETTINGS_JSON }}' > ${{ env.API_PROJECT_PATH }}/appsettings.json
 
       - name: Publish
         run: dotnet publish ${{ env.API_PROJECT_PATH }} --configuration Release --no-restore --no-build --output ${{ env.PUBLISH_DIR }}
