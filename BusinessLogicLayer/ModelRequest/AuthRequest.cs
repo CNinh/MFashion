@@ -51,7 +51,7 @@ namespace BusinessLogicLayer.ModelRequest
         public string PhoneNumber { get; set; }
     }
 
-    public class ConfirmRegistrationRequest
+    public class SetupPasswordRequest
     {
         [Required(ErrorMessage = "Token is required")]
         public string Token { get; set; }

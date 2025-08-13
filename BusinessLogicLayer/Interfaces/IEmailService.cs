@@ -9,7 +9,7 @@ namespace BusinessLogicLayer.Interfaces
 {
     public interface IEmailService
     {
-        string GenerateVerificationEmail(string email, TimeSpan expireIn);
+        string GenerateVerificationEmail(string email, TimeSpan expireIn, string role);
         Task SendEmailAsync(string toEmail, string subject, string body);
         ClaimsPrincipal? ValidateToken(string token);
     }

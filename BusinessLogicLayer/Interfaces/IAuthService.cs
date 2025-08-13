@@ -12,8 +12,7 @@ namespace BusinessLogicLayer.Interfaces
     {
         Task<BaseResponse> RegisterCustomerAsync(RegisterRequest request);
         Task<BaseResponse> RegisterVendorAsync(RegisterVendorRequest request);
-        Task<BaseResponse> ConfirmCustomerAsync(ConfirmRegistrationRequest request);
-        Task<BaseResponse> ConfirmVendorAsync(ConfirmRegistrationRequest request);
+        Task<BaseResponse> SetupPasswordAsync(SetupPasswordRequest request);
         Task<BaseResponse> LoginAsync(LoginRequest request);
         Task<BaseResponse> ForgotPasswordAsync(ForgotPasswordRequest request);
         Task<BaseResponse> ResetPasswordAsync(ResetPasswordRequest request);

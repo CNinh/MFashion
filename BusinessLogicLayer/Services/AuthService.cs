@@ -50,7 +50,7 @@ namespace BusinessLogicLayer.Services
                     return response;
                 }
 
-                var token = _emailService.GenerateVerificationEmail(request.Email, TimeSpan.FromMinutes(10));
+                var token = _emailService.GenerateVerificationEmail(request.Email, TimeSpan.FromMinutes(10), "customer");
 
                 // Create register password link
                 var link = $"http://localhost:3000/setup-password?token={token}&type=customer";
@@ -131,7 +131,7 @@ namespace BusinessLogicLayer.Services
                 await _unitOfWork.PendingVendorRepository.InsertAsync(pending);
                 await _unitOfWork.CommitAsync();
 
-                var token = _emailService.GenerateVerificationEmail(request.Email, TimeSpan.FromMinutes(10));
+                var token = _emailService.GenerateVerificationEmail(request.Email, TimeSpan.FromMinutes(10), "vendor");
 
                 // Create register password link
                 var link = $"http://localhost:3000/setup-password?token={token}&type=vendor";
@@ -155,7 +155,7 @@ namespace BusinessLogicLayer.Services
             return response;
         }
 
-        public async Task<BaseResponse> ConfirmCustomerAsync(ConfirmRegistrationRequest request)
+        public async Task<BaseResponse> SetupPasswordAsync(SetupPasswordRequest request)
         {
             var response = new BaseResponse();
             try
@@ -169,7 +169,8 @@ namespace BusinessLogicLayer.Services
                 }
 
                 var email = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-                var type = principal.Claims.FirstOrDefault(c => c.Type == "type")!.Value;
+                var type = principal.Claims.FirstOrDefault(c => c.Type == "type")?.Value;
+                var role = principal.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
 
                 if (string.IsNullOrEmpty(email) || type != "register")
                 {
@@ -187,92 +188,51 @@ namespace BusinessLogicLayer.Services
                     return response;
                 }
 
-                var account = new Account
+                Account account;
+
+                if (role == "customer")
                 {
-                    Email = email,
-                    RoleId = 3,
-                    IsDisable = false,
-                    TwoFactorEnabled = false
-                };
-
-                account.Password = HashPassword(account, request.Password);
-
-                await _unitOfWork.AccountRepository.InsertAsync(account);
-                await _unitOfWork.CommitAsync();
-
-                await _cartService.CreateCart(account.Id);
-
-                response.Success = true;
-                response.Data = account;
-                response.Message = "Account registered successfully.";
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = "An errror has occured, please try again later!";
-                response.Errors.Add(ex.Message);
-            }
-
-            return response;
-        }
-
-        public async Task<BaseResponse> ConfirmVendorAsync(ConfirmRegistrationRequest request)
-        {
-            var response = new BaseResponse();
-            try
-            {
-                var principal = _emailService.ValidateToken(request.Token);
-
-                if (principal == null)
-                {
-                    response.Message = "Invalid or Expired token!";
-                    return response;
+                    account = new Account
+                    {
+                        Email = email,
+                        RoleId = 3,
+                        IsDisable = false,
+                        TwoFactorEnabled = false
+                    };
                 }
-
-                var email = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-                var type = principal.Claims.FirstOrDefault(c => c.Type == "type")!.Value;
-
-                if (string.IsNullOrEmpty(email) || type != "register")
+                else if (role == "vendor")
                 {
-                    response.Message = "Invalid token!";
-                    return response;
-                }
-
-                var existingAccount = await _unitOfWork.AccountRepository.Queryable()
-                                            .Where(a => a.Email == email)
-                                            .FirstOrDefaultAsync();
-
-                if (existingAccount != null)
-                {
-                    response.Message = "Account already exist!";
-                    return response;
-                }
-
-                var pending = await _unitOfWork.PendingVendorRepository.Queryable()
+                    var pending = await _unitOfWork.PendingVendorRepository.Queryable()
                                     .Where(pv => pv.Email == email)
                                     .FirstOrDefaultAsync();
 
-                if (pending == null)
+                    if (pending == null)
+                    {
+                        response.Message = "Registration data not found or expired!";
+                        return response;
+                    }
+
+                    account = new Account
+                    {
+                        Email = email,
+                        RoleId = 2,
+                        FirstName = pending.FirstName,
+                        LastName = pending.LastName,
+                        ShopName = pending.ShopName,
+                        PhoneNumber = pending.PhoneNumber,
+                        IsDisable = false,
+                        TwoFactorEnabled = false
+                    };
+
+                    _unitOfWork.PendingVendorRepository.RemoveEntity(pending);
+                }
+                else
                 {
-                    response.Message = "Registration data not found or expired!";
+                    response.Message = "Invalid registration!";
                     return response;
                 }
 
-                var account = new Account
-                {
-                    Email = email,
-                    RoleId = 2,
-                    FirstName = pending.FirstName,
-                    LastName = pending.LastName,
-                    ShopName = pending.ShopName,
-                    PhoneNumber = pending.PhoneNumber,
-                    IsDisable = false,
-                    TwoFactorEnabled = false
-                };
-
                 account.Password = HashPassword(account, request.Password);
-
-                _unitOfWork.PendingVendorRepository.RemoveEntity(pending);
 
                 await _unitOfWork.AccountRepository.InsertAsync(account);
                 await _unitOfWork.CommitAsync();
@@ -332,7 +292,7 @@ namespace BusinessLogicLayer.Services
 
                         adminAccount = new Account
                         {
-                            Email = adminEMail,
+                            Email = adminEMail!,
                             FirstName = adminEMail,
                             LastName = "",
                             RoleId = 1
@@ -411,7 +371,7 @@ namespace BusinessLogicLayer.Services
         {
             Console.WriteLine($"Generating token for account: {account.Email}");
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]!);
 
             string roleName;
             // Id == 0 means admin login from appsettings

@@ -23,7 +23,7 @@ namespace BusinessLogicLayer.Services
             _configuration = configuration;
         }
 
-        public string GenerateVerificationEmail(string email, TimeSpan expireIn)
+        public string GenerateVerificationEmail(string email, TimeSpan expireIn, string role)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
@@ -33,7 +33,8 @@ namespace BusinessLogicLayer.Services
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.Email, email),
-                    new Claim("type", "register")
+                    new Claim("type", "register"),
+                    new Claim("role", role)
                 }),
                 Expires = DateTime.UtcNow.Add(expireIn),
                 Issuer = _configuration["Jwt:Issuer"],

@@ -123,7 +123,7 @@ builder.Services.Configure<CloudinarySetting>(
     builder.Configuration.GetSection("Cloudinary")
 );
 
-// 7. Configure Dependency Injection
+// 8. Configure Dependency Injection
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IDataSeeder, DataSeeder>();
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -131,7 +131,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<ICloundinaryService, CloudinaryService>();
 
-// 8. Build the app
+// 9. Build the app
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -140,7 +140,7 @@ using (var scope = app.Services.CreateScope())
     await seeder.SeedAdminAsync();
 }
 
-// 9. Configure the HTTP request pipeline.
+// 10. Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

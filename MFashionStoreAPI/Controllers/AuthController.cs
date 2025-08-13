@@ -28,18 +28,6 @@ namespace MFashionStoreAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("confirm-customer")]
-        public async Task<IActionResult> ConfirmCustomer([FromBody] ConfirmRegistrationRequest request)
-        {
-            var result = await _authService.ConfirmCustomerAsync(request);
-
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
-
         [HttpPost("register-vendor")]
         public async Task<IActionResult> RegisterVendor([FromBody] RegisterVendorRequest request)
         {
@@ -52,10 +40,10 @@ namespace MFashionStoreAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("confirm-vendor")]
-        public async Task<IActionResult> ConfirmVendor([FromBody] ConfirmRegistrationRequest request)
+        [HttpPost("setup-password")]
+        public async Task<IActionResult> SetupPassword([FromBody] SetupPasswordRequest request)
         {
-            var result = await _authService.ConfirmVendorAsync(request);
+            var result = await _authService.SetupPasswordAsync(request);
 
             if (result.Success)
             {
