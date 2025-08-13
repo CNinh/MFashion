@@ -86,7 +86,7 @@ namespace BusinessLogicLayer.ModelResponse
     public class ColorResponse
     {
         public int Id { get; set; }
-        public string ColorTheme { get; set; }
+        public string ThemeColor { get; set; }
     }
 
     public class MaterialResponse

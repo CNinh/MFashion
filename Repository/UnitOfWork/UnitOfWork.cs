@@ -25,6 +25,12 @@ namespace Repository.UnitOfWork
             RoleRepository = new RoleRepository(_context);
             ProductRepository = new ProductRepository(_context);
             ProductImageRepository = new ProductImageRepository(_context);
+            OrderDetailRepository = new OrderDetailRepository(_context);
+            ColorRepository = new ColorRepository(_context);
+            SizeRepository = new SizeRepository(_context);
+            MaterialRepository = new MaterialRepository(_context);
+            DeliveryRepository = new DeliveryRepository(_context);
+            TagRepository = new TagRepository(_context);
         }
 
         public IAccountRepository AccountRepository { get; private set; }
@@ -33,6 +39,12 @@ namespace Repository.UnitOfWork
         public IRoleRepository RoleRepository { get; private set; }
         public IProductRepository ProductRepository { get; private set; }
         public IProductImageRepository ProductImageRepository { get; private set; }
+        public IOrderDetailRepository OrderDetailRepository { get; private set; }
+        public IColorRepository ColorRepository { get; private set; }
+        public ISizeRepository SizeRepository { get; private set; }
+        public IMaterialRepository MaterialRepository { get; private set; }
+        public IDeliveryRepository DeliveryRepository { get; private set; }
+        public ITagRepository TagRepository { get; private set; }
         public void Dispose()
         {
             _context.Dispose();

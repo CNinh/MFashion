@@ -16,6 +16,12 @@ namespace Repository.UnitOfWork
         IRoleRepository RoleRepository { get; }
         IProductRepository ProductRepository { get; }
         IProductImageRepository ProductImageRepository { get; }
+        IOrderDetailRepository OrderDetailRepository { get; }
+        IColorRepository ColorRepository { get; }
+        ISizeRepository SizeRepository { get; }
+        IMaterialRepository MaterialRepository { get; }
+        IDeliveryRepository DeliveryRepository { get; }
+        ITagRepository TagRepository { get; }
         int Save();
         Task CommitAsync();
         Task<IDbContextTransaction> BeginTransactionAsync();

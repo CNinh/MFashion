@@ -34,21 +34,13 @@ namespace DataAccessObject.Model
         public int AccountId { get; set; }
         public Account Account { get; set; }
 
-        public int ColorId { get; set; }
-        public Color Color { get; set; }
-
-        public int SizeId { get; set; }
-        public Size Size { get; set; }
-
-        public int MaterialId { get; set; }
-        public Material Material { get; set; }
-
-        public int DeliveryId { get; set; }
-        public Delivery Delivery { get; set; }
-
         public int CategoryId { get; set; }
         public ProductCategory ProductCategory { get; set; }
 
+        public virtual ICollection<Color> Colors { get; set; } = new List<Color>();
+        public virtual ICollection<Delivery> Deliveries { get; set; } = new List<Delivery>();
+        public virtual ICollection<Size> Sizes { get; set; } = new List<Size>();
+        public virtual ICollection<Material> Materials { get; set; } = new List<Material>();
         public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
         public virtual ICollection<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
         public virtual ICollection<ProductDesign> ProductDesigns { get; set; } = new List<ProductDesign>();

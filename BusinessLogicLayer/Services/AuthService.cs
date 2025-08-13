@@ -301,8 +301,15 @@ namespace BusinessLogicLayer.Services
 
                     var token = await GenerateJwtToken(adminAccount);
 
+                    var adLoginResponse = new LoginResponse
+                    {
+                        Token = token,
+                        RoleId = 1,
+                        Role = adminAccount.Role.RoleName                       
+                    };
+
                     response.Success = true;
-                    response.Data = token;
+                    response.Data = adLoginResponse;
                     response.Message = "Admin login successfully.";
                 }
 
@@ -326,8 +333,15 @@ namespace BusinessLogicLayer.Services
 
                 var userToken = await GenerateJwtToken(account);
 
+                var loginResponse = new LoginResponse
+                {
+                    Token = userToken,
+                    RoleId = account.RoleId,
+                    Role = account.Role.RoleName
+                };
+
                 response.Success = true;
-                response.Data = userToken;
+                response.Data = loginResponse;
                 response.Message = "User login successfully.";
             }
             catch (Exception ex)

@@ -146,29 +146,29 @@ namespace DataAccessObject
                 .WithMany(pc => pc.Products)
                 .HasForeignKey(p => p.CategoryId);
 
-            // Configure 1-N relationship between Color and Product
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.Color)
-                .WithMany(c => c.Products)
-                .HasForeignKey(p => p.ColorId);
+            // Configure N-N relationship between Color and Product
+            modelBuilder.Entity<Color>()
+                .HasMany(p => p.Products)
+                .WithMany(c => c.Colors)
+                .UsingEntity(j => j.ToTable("ProductColors"));
 
-            // Configure 1-N relationship between Size and Product
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.Size)
-                .WithMany(s => s.Products)
-                .HasForeignKey(p => p.SizeId);
+            // Configure N-N relationship between Size and Product
+            modelBuilder.Entity<Size>()
+                .HasMany(p => p.Products)
+                .WithMany(s => s.Sizes)
+                .UsingEntity(j => j.ToTable("ProductSizes"));
 
-            // Configure 1-N relationship between Material and Product
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.Material)
-                .WithMany(m => m.Products)
-                .HasForeignKey(p => p.MaterialId);
+            // Configure N-N relationship between Material and Product
+            modelBuilder.Entity<Material>()
+                .HasMany(p => p.Products)
+                .WithMany(m => m.Materials)
+                .UsingEntity(j => j.ToTable("ProductMaterials"));
 
-            // Configure 1-N relationship between Delivery and Product
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.Delivery)
-                .WithMany(d => d.Products)
-                .HasForeignKey(p => p.DeliveryId);
+            // Configure N-N relationship between Delivery and Product
+            modelBuilder.Entity<Delivery>()
+                .HasMany(p => p.Products)
+                .WithMany(d => d.Deliveries)
+                .UsingEntity(j => j.ToTable("ProductDeliveries"));
 
             // Configure N-N relationship between Product and Tag
             modelBuilder.Entity<Tag>()
