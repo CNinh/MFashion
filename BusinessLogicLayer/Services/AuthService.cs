@@ -53,7 +53,7 @@ namespace BusinessLogicLayer.Services
                 var token = _emailService.GenerateVerificationEmail(request.Email, TimeSpan.FromMinutes(10));
 
                 // Create register password link
-                var link = $"http://localhost:3000/setup-password?token={token}";
+                var link = $"http://localhost:3000/setup-password?token={token}&type=customer";
 
                 // Send email
                 var subject = "Register Account";
@@ -62,8 +62,7 @@ namespace BusinessLogicLayer.Services
                 await _emailService.SendEmailAsync(request.Email, subject, body);
 
                 response.Success = true;
-                response.Data = token;
-                response.Message = "Registration email sended successfully.";
+                response.Message = "Registration email has been sent, please check your email.";
             }
             catch (Exception ex)
             {
@@ -135,7 +134,7 @@ namespace BusinessLogicLayer.Services
                 var token = _emailService.GenerateVerificationEmail(request.Email, TimeSpan.FromMinutes(10));
 
                 // Create register password link
-                var link = $"http://localhost:3000/setup-password?token={token}";
+                var link = $"http://localhost:3000/setup-password?token={token}&type=vendor";
 
                 // Send email
                 var subject = "Register Account";
@@ -144,8 +143,7 @@ namespace BusinessLogicLayer.Services
                 await _emailService.SendEmailAsync(request.Email, subject, body);
 
                 response.Success = true;
-                response.Data = token;
-                response.Message = "Registration email sended successfully.";
+                response.Message = "Registration email has been sent, please check your email.";
             }
             catch (Exception ex)
             {
