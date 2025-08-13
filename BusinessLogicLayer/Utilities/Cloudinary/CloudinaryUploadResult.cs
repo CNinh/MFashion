@@ -4,16 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessObject.Model
+namespace BusinessLogicLayer.Utilities.Cloudinary
 {
-    public class ReviewImage
+    public class CloudinaryUploadResult
     {
-        public int Id { get; set; }
-        public string ImageUrl { get; set; }
+        public string Url { get; set; }
         public string PublicId { get; set; }
         public string ResourceType { get; set; }
-
-        public int ReviewId { get; set; }
-        public Review Review { get; set; }
     }
 }

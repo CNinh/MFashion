@@ -108,6 +108,11 @@ namespace BusinessLogicLayer.ModelRequest
         [MinLength(6, ErrorMessage = "Password must be at least 6 characters")]
         [MaxLength(100, ErrorMessage = "Password cannot exceed 100 characters")]
         public string NewPassword { get; set; }
+
+        [Required(ErrorMessage = "Confrim new password is required")]
+        [Compare(nameof(NewPassword), ErrorMessage = "Confirm new password must be same as new password")]
+        [DefaultValue("123#Example")]
+        public string ConfirmNewPassword { get; set; }
     }
 
     public class Toggle2FARequest

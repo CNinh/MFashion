@@ -1,5 +1,6 @@
 using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.Services;
+using BusinessLogicLayer.Utilities.Cloudinary;
 using DataAccessObject;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -117,12 +118,18 @@ builder.Services.AddDbContext<MFashionStoreDBContext>(options =>
     options.UseSqlServer(connectionString);
 });
 
+// 7. Configure Cloudinary
+builder.Services.Configure<CloudinarySetting>(
+    builder.Configuration.GetSection("Cloudinary")
+);
+
 // 7. Configure Dependency Injection
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IDataSeeder, DataSeeder>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<ICloundinaryService, CloudinaryService>();
 
 // 8. Build the app
 var app = builder.Build();

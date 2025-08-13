@@ -14,6 +14,8 @@ namespace Repository.UnitOfWork
         IPendingVendorRepository PendingVendorRepository { get; }
         ICartRepository CartRepository { get; }
         IRoleRepository RoleRepository { get; }
+        IProductRepository ProductRepository { get; }
+        IProductImageRepository ProductImageRepository { get; }
         int Save();
         Task CommitAsync();
         Task<IDbContextTransaction> BeginTransactionAsync();

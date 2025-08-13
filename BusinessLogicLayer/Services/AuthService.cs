@@ -53,7 +53,7 @@ namespace BusinessLogicLayer.Services
                 var token = _emailService.GenerateVerificationEmail(request.Email, TimeSpan.FromMinutes(10));
 
                 // Create register password link
-                var link = $"http://localhost:5224/api/Auth/confirm-customer?token={token}";
+                var link = $"http://localhost:3000/setup-password?token={token}";
 
                 // Send email
                 var subject = "Register Account";
@@ -135,7 +135,7 @@ namespace BusinessLogicLayer.Services
                 var token = _emailService.GenerateVerificationEmail(request.Email, TimeSpan.FromMinutes(10));
 
                 // Create register password link
-                var link = $"http://localhost:5224/api/Auth/confirm-vendor?token={token}";
+                var link = $"http://localhost:3000/setup-password?token={token}";
 
                 // Send email
                 var subject = "Register Account";

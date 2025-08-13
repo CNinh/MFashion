@@ -23,13 +23,16 @@ namespace Repository.UnitOfWork
             PendingVendorRepository = new PendingVendorRepository(_context);
             CartRepository = new CartRepository(_context);
             RoleRepository = new RoleRepository(_context);
+            ProductRepository = new ProductRepository(_context);
+            ProductImageRepository = new ProductImageRepository(_context);
         }
 
         public IAccountRepository AccountRepository { get; private set; }
         public IPendingVendorRepository PendingVendorRepository { get; private set; }
         public ICartRepository CartRepository { get; private set; }
         public IRoleRepository RoleRepository { get; private set; }
-
+        public IProductRepository ProductRepository { get; private set; }
+        public IProductImageRepository ProductImageRepository { get; private set; }
         public void Dispose()
         {
             _context.Dispose();
