@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.Services
 {
-    public class CloudinaryService : ICloundinaryService
+    public class CloudinaryService : ICloudinaryService
     {
         private readonly Cloudinary _cloudinary;
         private readonly CloudinarySetting _setting;
@@ -22,7 +22,7 @@ namespace BusinessLogicLayer.Services
             _setting = setting.Value;
 
             Account account = new Account(
-                _setting.CloundName,
+                _setting.CloudName,
                 _setting.ApiKey,
                 _setting.ApiSecret
             );

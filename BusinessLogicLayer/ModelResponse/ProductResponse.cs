@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataAccessObject.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,14 +7,6 @@ using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.ModelResponse
 {
-    public enum ProductStatus
-    {
-        OnSale,
-        InStock,
-        OutOfStock,
-        OnBackOrder
-    }
-
     public class ProductResponse
     {
         public int Id { get; set; }
@@ -25,7 +18,7 @@ namespace BusinessLogicLayer.ModelResponse
         public int Quantity { get; set; }
         public decimal Price { get; set; }
         public string? SKU { get; set; }
-        public ProductStatus Status { get; set; }
+        public Product.ProductStatus Status { get; set; }
         public int AccountId { get; set; }
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
@@ -55,9 +48,10 @@ namespace BusinessLogicLayer.ModelResponse
         public decimal Price { get; set; }
         public string Description { get; set; }
         public string? SKU { get; set; }
-        public ProductStatus Status { get; set; }
+        public Product.ProductStatus Status { get; set; }
         public int AccountId { get; set; }
         public int CategoryId { get; set; }
+        public DateTime CreateAt { get; set; }
         public List<string> ImageUrls { get; set; } = new List<string>();
         public List<TagResponse> Tags { get; set; } = new List<TagResponse>();
     }
@@ -70,8 +64,7 @@ namespace BusinessLogicLayer.ModelResponse
         public decimal Price { get; set; }
         public string Description { get; set; }
         public string? SKU { get; set; }
-        public ProductStatus Status { get; set; }
-        public int AccountId { get; set; }
+        public Product.ProductStatus Status { get; set; }
         public int CategoryId { get; set; }
         public List<string> ImageUrls { get; set; } = new List<string>();
         public List<TagResponse> Tags { get; set; } = new List<TagResponse>();

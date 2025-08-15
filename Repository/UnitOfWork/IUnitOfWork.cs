@@ -22,6 +22,8 @@ namespace Repository.UnitOfWork
         IMaterialRepository MaterialRepository { get; }
         IDeliveryRepository DeliveryRepository { get; }
         ITagRepository TagRepository { get; }
+        IDesignRepository DesignRepository { get; }
+        ICategoryRepository CategoryRepository { get; }
         int Save();
         Task CommitAsync();
         Task<IDbContextTransaction> BeginTransactionAsync();

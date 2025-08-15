@@ -1,6 +1,8 @@
-﻿using BusinessLogicLayer.ModelResponse;
+﻿using DataAccessObject.Model;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,29 +27,58 @@ namespace BusinessLogicLayer.ModelRequest
 
     public class CreateProductRequest
     {
+        [Required(ErrorMessage = "Product name is required!")]
         public string ProductName { get; set; }
+
+        [Required(ErrorMessage = "Quantity is required!")]
+        [Range(0, int.MaxValue, ErrorMessage = "Quantity value cannot be negative.")]
         public int Quantity { get; set; }
+
+        [Required(ErrorMessage = "Product price is required!")]
+        [Range(1, (double)decimal.MaxValue, ErrorMessage = "Product price value must be positive.")]
         public decimal Price { get; set; }
+
+        [Required(ErrorMessage = "Description of product is required!")]
         public string Description { get; set; }
-        public string? SKU { get; set; }
-        public ProductStatus Status { get; set; }
-        public int AccountId { get; set; }
+
+        [Required(ErrorMessage = "Status of product is required!")]
+        public Product.ProductStatus Status { get; set; }
+
+        [Required(ErrorMessage = "Category is required!")]
         public int CategoryId { get; set; }
-        public List<string> ImageUrls { get; set; } = new List<string>();
-        public ICollection<TagResponse> Tags { get; set; } = new List<TagResponse>();
+
+        [Required(ErrorMessage = "Product images are required!")]
+        public List<IFormFile> Images { get; set; }
+        public List<int> TagIds { get; set; } = new List<int>();
     }
 
     public class UpdateProductRequest
     {
+        [Required(ErrorMessage = "Product name is required!")]
         public string ProductName { get; set; }
+
+        [Required(ErrorMessage = "Quantity is required!")]
+        [Range(0, int.MaxValue, ErrorMessage = "Quantity value cannot be negative.")]
         public int Quantity { get; set; }
+
+        [Required(ErrorMessage = "Product price is required!")]
+        [Range(1, (double)decimal.MaxValue, ErrorMessage = "Product price value must be positive.")]
         public decimal Price { get; set; }
+
+        [Required(ErrorMessage = "Description of product is required!")]
         public string Description { get; set; }
-        public string? SKU { get; set; }
-        public ProductStatus Status { get; set; }
-        public int AccountId { get; set; }
+
+        [Required(ErrorMessage = "Status of product is required!")]
+        public Product.ProductStatus Status { get; set; }
+
+        [Required(ErrorMessage = "Category is required!")]
         public int CategoryId { get; set; }
-        public List<string> ImageUrls { get; set; } = new List<string>();
-        public ICollection<TagResponse> Tags { get; set; } = new List<TagResponse>();
+
+        public List<int>? KeepImageIds { get; set; }
+
+        [Required(ErrorMessage = "Product images are required!")]
+        public List<IFormFile> Images { get; set; }
+
+        public List<int> TagIds { get; set; } = new List<int>();
     }
 }

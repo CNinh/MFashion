@@ -20,7 +20,7 @@ namespace DataAccessObject.Model
         public decimal Price { get; set; }
 
         [Column(TypeName = "varchar(50)")]
-        public string? SKU { get; set; }
+        public string SKU { get; set; }
         public enum ProductStatus
         {
             OnSale,

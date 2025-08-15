@@ -381,48 +381,49 @@ namespace BusinessLogicLayer.Services
             return result == PasswordVerificationResult.Success;
         }
 
-        private async Task<string> GenerateJwtToken(Account account)
-        {
-            Console.WriteLine($"Generating token for account: {account.Email}");
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]!);
+            private async Task<string> GenerateJwtToken(Account account)
+            {
+                Console.WriteLine($"Generating token for account: {account.Email}");
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]!);
 
-            string roleName;
-            // Id == 0 means admin login from appsettings
-            if (account.Id == 0)
-            {
-                roleName = "Admin";
-            }
-            else
-            {
-                var role = await _unitOfWork.RoleRepository.GetByIdAsync(account.RoleId);
-                if (role == null)
+                string roleName;
+                // Id == 0 means admin login from appsettings
+                if (account.Id == 0)
                 {
-                    throw new Exception("Role not found");
+                    roleName = "Admin";
                 }
-                roleName = role.RoleName;
-            }
-
-            Console.WriteLine($"Role determined: {roleName}");
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
+                else
                 {
-                    new Claim(ClaimTypes.Email, account.Email),
-                    new Claim(ClaimTypes.Role, roleName),
-                    new Claim(ClaimTypes.NameIdentifier, account.Id.ToString()),
-                    new Claim("FullName", $"{account.FirstName} {account.LastName}"),
-                }),
-                Expires = DateTime.UtcNow.AddDays(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-                Issuer = _configuration["Jwt:Issuer"],
-                Audience = _configuration["Jwt:Audience"]
-            };
+                    var role = await _unitOfWork.RoleRepository.GetByIdAsync(account.RoleId);
+                    if (role == null)
+                    {
+                        throw new Exception("Role not found");
+                    }
+                    roleName = role.RoleName;
+                }
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-        }
+                Console.WriteLine($"Role determined: {roleName}");
+
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new[]
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, account.Id.ToString()),
+                        new Claim(ClaimTypes.Email, account.Email),
+                        new Claim("id", account.Id.ToString()),
+                        new Claim(ClaimTypes.Role, roleName),
+                        new Claim("name", $"{account.FirstName} {account.LastName}"),
+                    }),
+                    Expires = DateTime.UtcNow.AddDays(1),
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+                    Issuer = _configuration["Jwt:Issuer"],
+                    Audience = _configuration["Jwt:Audience"]
+                };
+
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                return tokenHandler.WriteToken(token);
+            }
         #endregion
     }
 }

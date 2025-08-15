@@ -1,12 +1,15 @@
 ﻿using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.ModelRequest;
 using BusinessLogicLayer.ModelResponse;
+using BusinessLogicLayer.Utilities;
 using DataAccessObject.Model;
 using LinqKit;
+using MailKit.Net.Imap;
 using Microsoft.EntityFrameworkCore;
 using Repository.UnitOfWork;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -16,10 +19,10 @@ namespace BusinessLogicLayer.Services
 {
     public class ProductService : IProductService
     {
-        private readonly UnitOfWork _unitOfWork;
-        private readonly CloudinaryService _cloudinaryService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ICloudinaryService _cloudinaryService;
 
-        public ProductService(UnitOfWork unitOfWork, CloudinaryService cloudinaryService)
+        public ProductService(IUnitOfWork unitOfWork, ICloudinaryService cloudinaryService)
         {
             _unitOfWork = unitOfWork;
             _cloudinaryService = cloudinaryService;
@@ -121,6 +124,7 @@ namespace BusinessLogicLayer.Services
                                     .Include(p => p.Materials)
                                     .Include(p => p.Tags)
                                     .Include(p => p.Deliveries)
+                                    .Include(p => p.ProductDesigns)
                                     .AsSplitQuery()
                                     .FirstOrDefaultAsync();
 
@@ -161,6 +165,8 @@ namespace BusinessLogicLayer.Services
                              : new List<string>()
                 }).ToList();
 
+                var image = product.ProductImages.Select(img => img.ImageUrl).ToList();
+
                 var color = await _unitOfWork.ColorRepository.GetAllAsync();
 
                 var colorResponse = color.Select(c => new ColorResponse
@@ -193,30 +199,169 @@ namespace BusinessLogicLayer.Services
                     MaterialType = m.MaterialType
                 }).ToList();
 
-                var tag = await _unitOfWork.TagRepository.GetAllAsync();
-
-                var tagResponse = tag.Select(t => new TagResponse
+                var tagResponse = product.Tags.Select(t => new TagResponse
                 {
                     Id = t.Id,
                     TagName = t.TagName
                 }).ToList();
+
+                var desgin = await _unitOfWork.DesignRepository.Queryable()
+                                    .Where(d => d.ProductId == id)
+                                    .ToListAsync();
+
+                var designResponse = desgin.Select(d => new DesignResponse
+                {
+                    Id = d.Id,
+                    FileUrl = d.FileUrl
+                }).ToList();
+
+                var productResponse = new ProductResponse
+                {
+                    Id = product.Id,
+                    ProductName = product.ProductName,
+                    Rate = avgRate,
+                    TotalRate = totalRate,
+                    TotalSold = totalSold,
+                    Description = product.Description,
+                    Quantity = product.Quantity,
+                    Price = product.Price,
+                    SKU = product.SKU,
+                    Status = product.Status,
+                    AccountId = product.AccountId,
+                    CategoryId = product.CategoryId,
+                    CategoryName = product.ProductCategory.CategoryName,
+                    ImageUrls = image,
+                    Colors = colorResponse,
+                    Deliveries = deliveryResponse,
+                    Designs = designResponse,
+                    Materials = materialResponse,
+                    Sizes = sizeResponse,
+                    Tags = tagResponse
+                };
+
+                response.Success = true;
+                response.Data = productResponse;
+                response.Message = "Product detail retrived successfully.";
             }
-            catch(Exception ex )
+            catch (Exception ex)
             {
                 response.Success = false;
                 response.Message = "Error fetching product detail!";
                 response.Errors.Add(ex.Message);
             }
 
-            return response; 
+            return response;
         }
 
-        public async Task<BaseResponse> CreateProduct(CreateProductRequest request)
+        public async Task<BaseResponse> CreateProduct(int accountId, CreateProductRequest request)
         {
             var response = new BaseResponse();
             try
             {
+                if (request == null)
+                {
+                    response.Message = "Product information is required!";
+                    return response;
+                }
 
+                var productImages = new List<ProductImage>();
+
+                if (request.Images != null && request.Images.Any())
+                {
+                    foreach (var imageFile in request.Images)
+                    {
+                        using var stream = imageFile.OpenReadStream();
+                        var uploadResult = await _cloudinaryService.UploadFileAsync(
+                            stream,
+                            imageFile.FileName,
+                            imageFile.ContentType
+                        );
+
+                        productImages.Add(new ProductImage
+                        {
+                            ImageUrl = uploadResult.Url,
+                            PublicId = uploadResult.PublicId,
+                            ResourceType = uploadResult.ResourceType
+                        });
+                    }
+                }
+
+                var tags = new List<Tag>();
+
+                if (request.TagIds != null && request.TagIds.Any())
+                {
+                    tags = await _unitOfWork.TagRepository.Queryable()
+                                            .Where(t => request.TagIds.Contains(t.Id))
+                                            .ToListAsync();
+                }
+
+                Product.ProductStatus status;
+
+                if (request.Quantity > 0)
+                {
+                    if (request.Status != Product.ProductStatus.OutOfStock &&
+                        request.Status != Product.ProductStatus.OnBackOrder)
+                    {
+                        response.Message = "Status has to be In stock or On sale!";
+                        return response;
+                    }
+                    status = request.Status;
+                }
+                else
+                {
+                    if (request.Status != Product.ProductStatus.InStock &&
+                        request.Status != Product.ProductStatus.OnSale)
+                    {
+                        response.Message = "Status has to be Out of stock or On back order!";
+                        return response;
+                    }
+                    status = request.Status;
+                }
+
+                var product = new Product
+                {
+                    ProductName = request.ProductName,
+                    Quantity = request.Quantity,
+                    Price = request.Price,
+                    Description = request.Description,
+                    SKU = GenerateSku(request.CategoryId),
+                    Status = status,
+                    AccountId = accountId,
+                    CategoryId = request.CategoryId,
+                    ProductImages = productImages,
+                    Tags = tags,
+                    CreateAt = TimeHelper.VietnamTimeZone()
+                };
+
+                await _unitOfWork.ProductRepository.InsertAsync(product);
+                await _unitOfWork.CommitAsync();
+
+                var imageResponse = product.ProductImages.Select(img => img.ImageUrl).ToList();
+
+                var tagResponse = product.Tags.Select(t => new TagResponse
+                {
+                    Id = t.Id,
+                    TagName = t.TagName,
+                }).ToList();
+
+                var productResponse = new CreateProductResponse
+                {
+                    Id = product.Id,
+                    ProductName = product.ProductName,
+                    Quantity = product.Quantity,
+                    Price = product.Price,
+                    Description = product.Description,
+                    SKU = product.SKU,
+                    Status = product.Status,
+                    CategoryId = product.CategoryId,
+                    CreateAt = TimeHelper.VietnamTimeZone(),
+                    ImageUrls = imageResponse,
+                    Tags = tagResponse
+                };
+
+                response.Success = true;
+                response.Data = product;
+                response.Message = "Product created successfully.";
             }
             catch (Exception ex)
             {
@@ -233,7 +378,134 @@ namespace BusinessLogicLayer.Services
             var response = new BaseResponse();
             try
             {
+                var product = await _unitOfWork.ProductRepository.Queryable()
+                              .Where(p => p.Id == id)
+                              .Include(p => p.ProductImages)
+                              .Include(p => p.Tags)
+                              .FirstOrDefaultAsync();
 
+                if (product == null)
+                {
+                    response.Message = "Product not found!";
+                    return response;
+                }
+
+                if (request == null)
+                {
+                    response.Message = "Product detail has to be provided to update!";
+                    return response;
+                }
+
+                Product.ProductStatus status;
+
+                if (request.Quantity > 0)
+                {
+                    if (request.Status != Product.ProductStatus.OutOfStock &&
+                        request.Status != Product.ProductStatus.OnBackOrder)
+                    {
+                        response.Message = "Status has to be In stock or On sale!";
+                        return response;
+                    }
+                    status = request.Status;
+                }
+                else
+                {
+                    if (request.Status != Product.ProductStatus.InStock &&
+                        request.Status != Product.ProductStatus.OnSale)
+                    {
+                        response.Message = "Status has to be Out of stock or On back order!";
+                        return response;
+                    }
+                    status = request.Status;
+                }
+
+                product.ProductName = request.ProductName;
+                product.Quantity = request.Quantity;
+                product.Price = request.Price;
+                product.Description = request.Description;
+                product.Status = status;
+                product.CategoryId = request.CategoryId;
+
+                // Update images
+                if (request.KeepImageIds != null && request.KeepImageIds.Any())
+                {
+                    var deleteImage = product.ProductImages
+                                      .Where(img => !request.KeepImageIds.Contains(img.Id))
+                                      .ToList();
+
+                    foreach (var img in deleteImage)
+                    {
+                        await _cloudinaryService.DeleteFileAsync(img.PublicId, img.ResourceType);
+                        _unitOfWork.ProductImageRepository.Delete(img.Id);
+                    }
+                }
+                else
+                {
+                    foreach (var img in product.ProductImages.ToList())
+                    {
+                        await _cloudinaryService.DeleteFileAsync(img.PublicId, img.ResourceType);
+                        _unitOfWork.ProductImageRepository.Delete(img.Id);
+                    }
+                }
+
+                if (request.Images != null && request.Images.Any())
+                {
+                    foreach (var imageFile in request.Images)
+                    {
+                        using var stream = imageFile.OpenReadStream();
+                        var uploadResult = await _cloudinaryService.UploadFileAsync(
+                            stream,
+                            imageFile.FileName,
+                            imageFile.ContentType
+                        );
+
+                        product.ProductImages.Add(new ProductImage
+                        {
+                            ImageUrl = uploadResult.Url,
+                            PublicId = uploadResult.PublicId,
+                            ResourceType = uploadResult.ResourceType
+                        });
+                    }
+                }
+
+                // Update tags
+                if (request.TagIds != null && request.TagIds.Any())
+                {
+                    var tags = await _unitOfWork.TagRepository.Queryable()
+                                     .Where(t => request.TagIds.Contains(t.Id))
+                                     .ToListAsync();
+
+                    product.Tags = tags;
+                }
+
+                _unitOfWork.ProductRepository.Update(product);
+                await _unitOfWork.CommitAsync();
+
+                var imageResponse = product.ProductImages.Select(img => img.ImageUrl).ToList();
+
+                var tagResponse = product.Tags.Select(t => new TagResponse
+                {
+                    Id = t.Id,
+                    TagName = t.TagName
+                }).ToList();
+
+                var productResponse = new UpdateProductResponse
+                {
+                    Id = product.Id,
+                    ProductName = product.ProductName,
+                    Quantity = product.Quantity,
+                    Price = product.Price,
+                    Description = product.Description,
+                    SKU = product.SKU,
+                    Status = product.Status,
+                    CategoryId = product.CategoryId,
+                    ImageUrls = imageResponse,
+                    Tags = tagResponse
+                };
+
+                response.Success = true;
+                response.Data = productResponse;
+                return response;
             }
             catch (Exception ex)
             {
@@ -250,7 +522,32 @@ namespace BusinessLogicLayer.Services
             var response = new BaseResponse();
             try
             {
+                var product = await _unitOfWork.ProductRepository.Queryable()
+                                    .Where(p => p.Id == id)
+                                    .Include(p => p.ProductImages)
+                                    .FirstOrDefaultAsync();
 
+                if (product == null)
+                {
+                    response.Message = "Product not found!";
+                    return response;
+                }
+
+                foreach (var img in product.ProductImages.ToList())
+                {
+                    await _cloudinaryService.DeleteFileAsync(img.PublicId, img.ResourceType);
+                }
+
+                if (product.ProductImages != null && product.ProductImages.Any())
+                {
+                    _unitOfWork.ProductImageRepository.RemoveRange(product.ProductImages);
+                }
+
+                _unitOfWork.ProductRepository.Delete(product.Id);
+                await _unitOfWork.CommitAsync();
+
+                response.Success = true;
+                response.Message = "Product deleted successfully.";
             }
             catch (Exception ex)
             {
@@ -261,5 +558,51 @@ namespace BusinessLogicLayer.Services
 
             return response;
         }
+
+        #region
+        private string GenerateSku(int categoryId)
+        {
+            var category = _unitOfWork.CategoryRepository.Queryable()
+                    .Where(c => c.Id == categoryId)
+                    .FirstOrDefault();
+
+            if (category == null)
+            {
+                throw new Exception("Category not found");
+            }
+
+            var prefix = RemoveDiacritics(category.CategoryName)
+                            .ToUpper()
+                            .Substring(0, Math.Min(3, category.CategoryName.Length));
+
+            var currentDay = TimeHelper.VietnamTimeZone();
+
+            var currentDayString = currentDay.ToString("yyyyMMdd");
+            
+            var skuInDay = _unitOfWork.ProductRepository.Queryable()
+                .Where(p => p.CreateAt.Date == currentDay)
+                .Count();
+
+            return $"{prefix}-{currentDayString}-{skuInDay + 1:D3}";
+        }
+
+        private string RemoveDiacritics(string text)
+        {
+            var normalized = text.Normalize(NormalizationForm.FormD);
+
+            var sb = new StringBuilder();
+
+            foreach(var c in normalized)
+            {
+                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                {
+                    sb.Append(c);
+                }
+            }
+
+            return sb.ToString().Normalize(NormalizationForm.FormC);
+        }
+        #endregion
     }
 }

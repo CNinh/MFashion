@@ -31,6 +31,8 @@ namespace Repository.UnitOfWork
             MaterialRepository = new MaterialRepository(_context);
             DeliveryRepository = new DeliveryRepository(_context);
             TagRepository = new TagRepository(_context);
+            DesignRepository = new DesignRepository(_context);
+            CategoryRepository = new CategoryRepository(_context);
         }
 
         public IAccountRepository AccountRepository { get; private set; }
@@ -45,6 +47,8 @@ namespace Repository.UnitOfWork
         public IMaterialRepository MaterialRepository { get; private set; }
         public IDeliveryRepository DeliveryRepository { get; private set; }
         public ITagRepository TagRepository { get; private set; }
+        public IDesignRepository DesignRepository { get; private set; }
+        public ICategoryRepository CategoryRepository { get; private set; }
         public void Dispose()
         {
             _context.Dispose();

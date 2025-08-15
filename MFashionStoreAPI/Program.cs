@@ -62,6 +62,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
+            ValidAudience = builder.Configuration["Jwt:Audience"],
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
@@ -92,20 +93,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Admin", policy =>
-        policy.RequireClaim("Id", "1"));
+        policy.RequireClaim("id", "1"));
 
     options.AddPolicy("Vendor", policy =>
-        policy.RequireClaim("Id", "2"));
+        policy.RequireClaim("id", "2"));
 
     options.AddPolicy("Customer", policy =>
-        policy.RequireClaim("Id", "3"));
+        policy.RequireClaim("id", "3"));
 
     options.AddPolicy("AllRoles", policy =>
         policy.RequireAssertion(context =>
             context.User.HasClaim(c =>
-                (c.Type == "Id" && c.Value == "1") ||
-                (c.Type == "Id" && c.Value == "2") ||
-                (c.Type == "Id" && c.Value == "3")
+                (c.Type == "id" && c.Value == "1") ||
+                (c.Type == "id" && c.Value == "2") ||
+                (c.Type == "id" && c.Value == "3")
             )
         )
     );
@@ -129,7 +130,8 @@ builder.Services.AddScoped<IDataSeeder, DataSeeder>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ICartService, CartService>();
-builder.Services.AddScoped<ICloundinaryService, CloudinaryService>();
+builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 // 9. Build the app
 var app = builder.Build();

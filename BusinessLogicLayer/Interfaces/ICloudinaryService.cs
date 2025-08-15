@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.Interfaces
 {
-    public interface ICloundinaryService
+    public interface ICloudinaryService
     {
         Task<CloudinaryUploadResult> UploadFileAsync(Stream fileStream, string fileName, string contentType);
-        Task<bool> DeleteFileAsync(string publicId, string resouceType);
+        Task<bool> DeleteFileAsync(string publicId, string resourceType);
     }
 }

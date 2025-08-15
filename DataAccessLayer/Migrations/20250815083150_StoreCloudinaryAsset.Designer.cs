@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessObject.Migrations
 {
     [DbContext(typeof(MFashionStoreDBContext))]
-    [Migration("20250813030953_StoreCloudinaryAsset")]
+    [Migration("20250815083150_StoreCloudinaryAsset")]
     partial class StoreCloudinaryAsset
     {
         /// <inheritdoc />
@@ -38,6 +38,21 @@ namespace DataAccessObject.Migrations
                     b.HasIndex("BlogsId");
 
                     b.ToTable("BlogTags", (string)null);
+                });
+
+            modelBuilder.Entity("ColorProduct", b =>
+                {
+                    b.Property<int>("ColorsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ColorsId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("ProductColors", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessObject.Model.Account", b =>
@@ -634,18 +649,12 @@ namespace DataAccessObject.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ColorId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DeliveryId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MaterialId")
-                        .HasColumnType("int");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -658,10 +667,8 @@ namespace DataAccessObject.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("SKU")
+                        .IsRequired()
                         .HasColumnType("varchar(50)");
-
-                    b.Property<int>("SizeId")
-                        .HasColumnType("int");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -672,17 +679,8 @@ namespace DataAccessObject.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("ColorId");
-
-                    b.HasIndex("DeliveryId");
-
-                    b.HasIndex("MaterialId");
-
                     b.HasIndex("SKU")
-                        .IsUnique()
-                        .HasFilter("[SKU] IS NOT NULL");
-
-                    b.HasIndex("SizeId");
+                        .IsUnique();
 
                     b.ToTable("Products");
                 });
@@ -1019,6 +1017,51 @@ namespace DataAccessObject.Migrations
                         });
                 });
 
+            modelBuilder.Entity("DeliveryProduct", b =>
+                {
+                    b.Property<int>("DeliveriesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("DeliveriesId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("ProductDeliveries", (string)null);
+                });
+
+            modelBuilder.Entity("MaterialProduct", b =>
+                {
+                    b.Property<int>("MaterialsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MaterialsId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("ProductMaterials", (string)null);
+                });
+
+            modelBuilder.Entity("ProductSize", b =>
+                {
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SizesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductsId", "SizesId");
+
+                    b.HasIndex("SizesId");
+
+                    b.ToTable("ProductSizes", (string)null);
+                });
+
             modelBuilder.Entity("ProductTag", b =>
                 {
                     b.Property<int>("ProductsId")
@@ -1045,6 +1088,21 @@ namespace DataAccessObject.Migrations
                     b.HasOne("DataAccessObject.Model.Blog", null)
                         .WithMany()
                         .HasForeignKey("BlogsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ColorProduct", b =>
+                {
+                    b.HasOne("DataAccessObject.Model.Color", null)
+                        .WithMany()
+                        .HasForeignKey("ColorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccessObject.Model.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -1183,41 +1241,9 @@ namespace DataAccessObject.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccessObject.Model.Color", "Color")
-                        .WithMany("Products")
-                        .HasForeignKey("ColorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataAccessObject.Model.Delivery", "Delivery")
-                        .WithMany("Products")
-                        .HasForeignKey("DeliveryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataAccessObject.Model.Material", "Material")
-                        .WithMany("Products")
-                        .HasForeignKey("MaterialId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DataAccessObject.Model.Size", "Size")
-                        .WithMany("Products")
-                        .HasForeignKey("SizeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Account");
 
-                    b.Navigation("Color");
-
-                    b.Navigation("Delivery");
-
-                    b.Navigation("Material");
-
                     b.Navigation("ProductCategory");
-
-                    b.Navigation("Size");
                 });
 
             modelBuilder.Entity("DataAccessObject.Model.ProductDesign", b =>
@@ -1280,6 +1306,51 @@ namespace DataAccessObject.Migrations
                     b.Navigation("Review");
                 });
 
+            modelBuilder.Entity("DeliveryProduct", b =>
+                {
+                    b.HasOne("DataAccessObject.Model.Delivery", null)
+                        .WithMany()
+                        .HasForeignKey("DeliveriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccessObject.Model.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MaterialProduct", b =>
+                {
+                    b.HasOne("DataAccessObject.Model.Material", null)
+                        .WithMany()
+                        .HasForeignKey("MaterialsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccessObject.Model.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ProductSize", b =>
+                {
+                    b.HasOne("DataAccessObject.Model.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccessObject.Model.Size", null)
+                        .WithMany()
+                        .HasForeignKey("SizesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ProductTag", b =>
                 {
                     b.HasOne("DataAccessObject.Model.Product", null)
@@ -1328,21 +1399,6 @@ namespace DataAccessObject.Migrations
                     b.Navigation("CartItems");
                 });
 
-            modelBuilder.Entity("DataAccessObject.Model.Color", b =>
-                {
-                    b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("DataAccessObject.Model.Delivery", b =>
-                {
-                    b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("DataAccessObject.Model.Material", b =>
-                {
-                    b.Navigation("Products");
-                });
-
             modelBuilder.Entity("DataAccessObject.Model.Order", b =>
                 {
                     b.Navigation("OrderDetails");
@@ -1376,11 +1432,6 @@ namespace DataAccessObject.Migrations
             modelBuilder.Entity("DataAccessObject.Model.Role", b =>
                 {
                     b.Navigation("Accounts");
-                });
-
-            modelBuilder.Entity("DataAccessObject.Model.Size", b =>
-                {
-                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }
