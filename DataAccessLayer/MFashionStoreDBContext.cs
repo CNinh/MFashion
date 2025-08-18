@@ -28,7 +28,7 @@ namespace DataAccessObject
             }
         }
 
-        public DbSet<PendingVendor> PendingVendors { get; set; }
+        public DbSet<PendingAccount> PendingAccounts { get; set; }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<BlogCategory> BlogCategories { get; set; }

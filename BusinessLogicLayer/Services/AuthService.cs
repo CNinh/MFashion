@@ -51,6 +51,17 @@ namespace BusinessLogicLayer.Services
                     return response;
                 }
 
+                var pending = new PendingAccount
+                {
+                    Email = request.Email,
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    CreateAt = TimeHelper.VietnamTimeZone()
+                };
+
+                await _unitOfWork.PendingAccountRepository.InsertAsync(pending);
+                await _unitOfWork.CommitAsync();
+
                 var token = _emailService.GenerateVerificationEmail(request.Email, TimeSpan.FromMinutes(10), "customer");
 
                 // Create register password link
@@ -110,16 +121,16 @@ namespace BusinessLogicLayer.Services
                     return response;
                 }
 
-                var existingPending = await _unitOfWork.PendingVendorRepository.Queryable()
+                var existingPending = await _unitOfWork.PendingAccountRepository.Queryable()
                                             .Where(pv => pv.Email == request.Email)
                                             .ToListAsync();
 
                 if (existingPending.Any())
                 {
-                    _unitOfWork.PendingVendorRepository.RemoveRange(existingPending);
+                    _unitOfWork.PendingAccountRepository.RemoveRange(existingPending);
                 }
 
-                var pending = new PendingVendor
+                var pending = new PendingAccount
                 {
                     Email = request.Email,
                     FirstName = request.FirstName,
@@ -129,7 +140,7 @@ namespace BusinessLogicLayer.Services
                     CreateAt = TimeHelper.VietnamTimeZone()
                 };
 
-                await _unitOfWork.PendingVendorRepository.InsertAsync(pending);
+                await _unitOfWork.PendingAccountRepository.InsertAsync(pending);
                 await _unitOfWork.CommitAsync();
 
                 var token = _emailService.GenerateVerificationEmail(request.Email, TimeSpan.FromMinutes(10), "vendor");
@@ -189,6 +200,16 @@ namespace BusinessLogicLayer.Services
                     return response;
                 }
 
+                var pending = await _unitOfWork.PendingAccountRepository.Queryable()
+                                    .Where(pv => pv.Email == email)
+                                    .FirstOrDefaultAsync();
+
+                if (pending == null)
+                {
+                    response.Message = "Registration data not found or expired!";
+                    return response;
+                }
+
                 Account account;
 
                 if (role == "customer")
@@ -196,24 +217,18 @@ namespace BusinessLogicLayer.Services
                     account = new Account
                     {
                         Email = email,
+                        FirstName = pending.FirstName,
+                        LastName = pending.LastName,
                         RoleId = 3,
                         IsDisable = false,
                         TwoFactorEnabled = false,
-                        Slug = await GenerateSlugAsync($"{email}", null)
+                        Slug = await GenerateSlugAsync($"{email}", null, $"{pending.LastName} {pending.FirstName}")
                     };
+
+                    _unitOfWork.PendingAccountRepository.RemoveEntity(pending);
                 }
                 else if (role == "vendor")
                 {
-                    var pending = await _unitOfWork.PendingVendorRepository.Queryable()
-                                    .Where(pv => pv.Email == email)
-                                    .FirstOrDefaultAsync();
-
-                    if (pending == null)
-                    {
-                        response.Message = "Registration data not found or expired!";
-                        return response;
-                    }
-
                     account = new Account
                     {
                         Email = email,
@@ -222,12 +237,12 @@ namespace BusinessLogicLayer.Services
                         LastName = pending.LastName,
                         ShopName = pending.ShopName,
                         PhoneNumber = pending.PhoneNumber,
-                        Slug = await GenerateSlugAsync($"{email}", $"{pending.ShopName}"),
+                        Slug = await GenerateSlugAsync($"{email}", $"{pending.ShopName}", $"{pending.LastName} {pending.FirstName}"),
                         IsDisable = false,
                         TwoFactorEnabled = false
                     };
 
-                    _unitOfWork.PendingVendorRepository.RemoveEntity(pending);
+                    _unitOfWork.PendingAccountRepository.RemoveEntity(pending);
                 }
                 else
                 {
@@ -429,13 +444,17 @@ namespace BusinessLogicLayer.Services
             return tokenHandler.WriteToken(token);
         }
 
-        private async Task<string> GenerateSlugAsync(string email, string? shopName)
+        private async Task<string> GenerateSlugAsync(string email, string? shopName, string? fullName)
         {
             string baseText;
 
             if (!string.IsNullOrWhiteSpace(shopName))
             {
                 baseText = shopName;
+            }
+            else if (!string.IsNullOrWhiteSpace(fullName))
+            {
+                baseText = fullName;
             }
             else if (!string.IsNullOrWhiteSpace(email))
             {

@@ -17,7 +17,19 @@ namespace BusinessLogicLayer.ModelRequest
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email format")]
         [DefaultValue("user@gmail.com")]
-        public string Email { get; set; }      
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "First name is required")]
+        [RegularExpression(@"^[a-zA-Z\s]*$", ErrorMessage = "First name can only contain letters and spaces")]
+        [StringLength(50, ErrorMessage = "First name cannot exceed 50 characters")]
+        [DefaultValue("Nae")]
+        public string FirstName { get; set; }
+
+        [Required(ErrorMessage = "Last name is required")]
+        [RegularExpression(@"^[a-zA-Z\s]*$", ErrorMessage = "Last name can only contain letters and spaces")]
+        [StringLength(50, ErrorMessage = "Last name cannot exceed 50 characters")]
+        [DefaultValue("Ni")]
+        public string LastName { get; set; }
     }
 
     public class RegisterVendorRequest

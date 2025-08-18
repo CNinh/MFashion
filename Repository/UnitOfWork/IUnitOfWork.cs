@@ -11,7 +11,7 @@ namespace Repository.UnitOfWork
     public interface IUnitOfWork : IDisposable
     {
         IAccountRepository AccountRepository { get; }
-        IPendingVendorRepository PendingVendorRepository { get; }
+        IPendingAccountRepository PendingAccountRepository { get; }
         ICartRepository CartRepository { get; }
         IRoleRepository RoleRepository { get; }
         IProductRepository ProductRepository { get; }

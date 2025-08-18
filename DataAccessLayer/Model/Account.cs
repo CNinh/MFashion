@@ -32,7 +32,7 @@ namespace DataAccessObject.Model
         public string? ShopName { get; set; }
 
         [Column(TypeName = "varchar(100)")]
-        public string? Slug { get; set; }
+        public string Slug { get; set; }
         public bool IsDisable { get; set; }
         public string? VerificationToken { get; set; }
         public DateTime? VerificationTokenExpiry { get; set; }

@@ -10,7 +10,7 @@ namespace BusinessLogicLayer.ModelResponse
     public class AccountResponse
     {
         public int Id { get; set; }
-        public string? Slug { get; set; }
+        public string Slug { get; set; }
         public string? Avatar { get; set; }
         public string Email { get; set; }
         public string? FirstName { get; set; }
@@ -29,7 +29,7 @@ namespace BusinessLogicLayer.ModelResponse
         public string Email { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-        public string? Slug { get; set; }
+        public string Slug { get; set; }
         public bool IsDisable { get; set; }
     }
 
@@ -38,7 +38,7 @@ namespace BusinessLogicLayer.ModelResponse
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? PhoneNumber { get; set; }
-        public string? Slug { get; set; }
+        public string Slug { get; set; }
         public DateTime? DateOfBirth { get; set; }
     }
 }

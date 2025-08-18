@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Interfaces
 {
-    public interface IPendingVendorRepository : IGenericRepository<PendingVendor>
+    public interface IPendingAccountRepository : IGenericRepository<PendingAccount>
     {
     }
 }

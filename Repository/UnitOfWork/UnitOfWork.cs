@@ -20,7 +20,7 @@ namespace Repository.UnitOfWork
             _context = context;
 
             AccountRepository = new AccountRepository(_context);
-            PendingVendorRepository = new PendingVendorRepository(_context);
+            PendingAccountRepository = new PendingAccountRepository(_context);
             CartRepository = new CartRepository(_context);
             RoleRepository = new RoleRepository(_context);
             ProductRepository = new ProductRepository(_context);
@@ -36,7 +36,7 @@ namespace Repository.UnitOfWork
         }
 
         public IAccountRepository AccountRepository { get; private set; }
-        public IPendingVendorRepository PendingVendorRepository { get; private set; }
+        public IPendingAccountRepository PendingAccountRepository { get; private set; }
         public ICartRepository CartRepository { get; private set; }
         public IRoleRepository RoleRepository { get; private set; }
         public IProductRepository ProductRepository { get; private set; }

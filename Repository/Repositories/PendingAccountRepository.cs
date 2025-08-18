@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
-    public class PendingVendorRepository : GenericRepository<PendingVendor>, IPendingVendorRepository
+    public class PendingAccountRepository : GenericRepository<PendingAccount>, IPendingAccountRepository
     {
-        public PendingVendorRepository(MFashionStoreDBContext context) : base(context) { }
+        public PendingAccountRepository(MFashionStoreDBContext context) : base(context) { }
     }
 }
