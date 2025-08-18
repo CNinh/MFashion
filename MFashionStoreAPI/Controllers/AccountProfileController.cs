@@ -3,6 +3,7 @@ using BusinessLogicLayer.ModelRequest;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace MFashionStoreAPI.Controllers
@@ -20,7 +21,7 @@ namespace MFashionStoreAPI.Controllers
         }
 
         [HttpGet("getProfile")]
-        public async Task<IActionResult> GetAccountBySlug([FromQuery] string slug)
+        public async Task<IActionResult> GetAccountBySlug([FromQuery, Required] string slug)
         {
             var result = await _accountProfileService.GetAccountBySlug(slug);
 
@@ -46,7 +47,7 @@ namespace MFashionStoreAPI.Controllers
         }
 
         [HttpPut("updateAvatar")]
-        public async Task<IActionResult> UpdateAvatar(IFormFile file)
+        public async Task<IActionResult> UpdateAvatar([Required] IFormFile file)
         {
             if (file == null || file.Length == 0)
             {
@@ -67,7 +68,7 @@ namespace MFashionStoreAPI.Controllers
         }
 
         [HttpPut("updateShopName")]
-        public async Task<IActionResult> UpdateShop([FromQuery] string name)
+        public async Task<IActionResult> UpdateShop([FromQuery, Required] string name)
         {
             int accountId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 

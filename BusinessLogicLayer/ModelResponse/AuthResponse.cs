@@ -24,6 +24,8 @@ namespace BusinessLogicLayer.ModelResponse
         public required string Token { get; set; }
         public int RoleId { get; set; }
         public required string Role { get; set; }
+        public required string FullName { get; set; }
+        public string? Avatar { get; set; }
         public bool RequiredTwoFactor { get; set; } = false;
     }
 }

@@ -185,7 +185,7 @@ namespace BusinessLogicLayer.Services
                 await _unitOfWork.CommitAsync();
 
                 response.Success = true;
-                response.Data = shopName!;
+                response.Data = shopName;
                 response.Message = "Shop name updated successfully.";
             }
             catch (Exception ex)

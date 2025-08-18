@@ -324,7 +324,10 @@ namespace BusinessLogicLayer.Services
                     {
                         Token = token,
                         RoleId = 1,
-                        Role = adminAccount.Role.RoleName
+                        Role = adminAccount.Role.RoleName,
+                        FullName = adminAccount.FirstName!,
+                        Avatar = adminAccount.Avatar,
+                        RequiredTwoFactor = adminAccount.TwoFactorEnabled
                     };
 
                     response.Success = true;
@@ -356,7 +359,10 @@ namespace BusinessLogicLayer.Services
                 {
                     Token = userToken,
                     RoleId = account.RoleId,
-                    Role = account.Role.RoleName
+                    Role = account.Role.RoleName,
+                    FullName = account.LastName! + " " + account.FirstName!,
+                    Avatar = account.Avatar,
+                    RequiredTwoFactor = account.TwoFactorEnabled
                 };
 
                 response.Success = true;

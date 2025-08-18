@@ -26,7 +26,7 @@ namespace BusinessLogicLayer.Services
         public string GenerateVerificationEmail(string email, TimeSpan expireIn, string role)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]!);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -55,7 +55,7 @@ namespace BusinessLogicLayer.Services
             email.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = body };
 
             using var smtp = new SmtpClient();
-            await smtp.ConnectAsync(_configuration["EmailSettings:SmtpServer"], int.Parse(_configuration["EmailSettings:Port"]), SecureSocketOptions.StartTls);
+            await smtp.ConnectAsync(_configuration["EmailSettings:SmtpServer"], int.Parse(_configuration["EmailSettings:Port"]!), SecureSocketOptions.StartTls);
             await smtp.AuthenticateAsync(_configuration["EmailSettings:Username"], _configuration["EmailSettings:Password"]);
             await smtp.SendAsync(email);
             await smtp.DisconnectAsync(true);
@@ -68,7 +68,7 @@ namespace BusinessLogicLayer.Services
                 var issuer = _configuration["Jwt:Issuer"];
                 var audience = _configuration["Jwt:Audience"];
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+                var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]!);
 
                 var param = new TokenValidationParameters
                 {

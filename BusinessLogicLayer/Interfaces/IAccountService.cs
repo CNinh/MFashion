@@ -11,6 +11,6 @@ namespace BusinessLogicLayer.Interfaces
     {
         Task<BaseResponse> GetAllAccount();
         Task<BaseResponse> GetAccountById(int id);
-        Task<bool> DisableAccount(int id);
+        Task<BaseResponse> DisableAccount(int id);
     }
 }

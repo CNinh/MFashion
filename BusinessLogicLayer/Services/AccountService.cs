@@ -95,9 +95,49 @@ namespace BusinessLogicLayer.Services
             return response;
         }
 
-        public Task<bool> DisableAccount(int id)
+        public async Task<BaseResponse> DisableAccount(int id)
         {
-            throw new NotImplementedException();
+            var response = new BaseResponse();
+            try
+            {
+                var account = await _unitOfWork.AccountRepository.Queryable()
+                                    .Where(a => a.Id == id)
+                                    .FirstOrDefaultAsync();
+
+                if (account == null)
+                {
+                    response.Message = "Account not found!";
+                    return response;
+                }
+
+                if (account.IsDisable == false)
+                {
+                    account.IsDisable = true;
+                }
+                else
+                {
+                    account.IsDisable = false;
+                }
+
+                var status = account.IsDisable
+                             ? "disabled"
+                             : "enabled";
+
+                _unitOfWork.AccountRepository.Update(account);
+                await _unitOfWork.CommitAsync();
+
+                response.Success = true;
+                response.Data = status;
+                response.Message = $"Accout {status} successfully.";
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = "Error disable account!";
+                response.Errors.Add(ex.Message);
+            }
+
+            return response;
         }
     }
 }
