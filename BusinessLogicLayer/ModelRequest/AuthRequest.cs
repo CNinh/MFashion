@@ -96,6 +96,19 @@ namespace BusinessLogicLayer.ModelRequest
         public string Password { get; set; }
     }
 
+    public class VerifyLoginOTPRequest
+    {
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Invalid email format")]
+        [DefaultValue("user@gmail.com")]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "OTP is required")]
+        [Length(6, 6, ErrorMessage = "OTP must contains 6 digit characters")]
+        [DefaultValue("123456")]
+        public string OTP { get; set; }
+    }
+
     public class GoogleLoginRequest
     {
         public string IdToken { get; set; }
@@ -125,11 +138,5 @@ namespace BusinessLogicLayer.ModelRequest
         [Compare(nameof(NewPassword), ErrorMessage = "Confirm new password must be same as new password")]
         [DefaultValue("123#Example")]
         public string ConfirmNewPassword { get; set; }
-    }
-
-    public class Toggle2FARequest
-    {
-        [Required]
-        public bool Enable { get; set; }
     }
 }

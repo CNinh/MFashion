@@ -63,5 +63,17 @@ namespace MFashionStoreAPI.Controllers
             }
             return BadRequest(result);
         }
+
+        [HttpPost("login-otp")]
+        public async Task<IActionResult> LoginOTP([FromBody] VerifyLoginOTPRequest request)
+        {
+            var result = await _authService.VerifyLoginOTP(request);
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
     }
 }

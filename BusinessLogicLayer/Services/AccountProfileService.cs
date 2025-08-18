@@ -130,12 +130,10 @@ namespace BusinessLogicLayer.Services
 
                 var image = await _cloudinaryService.UploadAvatarAsync(fileStream, fileName);
                 account.Avatar = image;
-
-                _unitOfWork.AccountRepository.Update(account);
                 await _unitOfWork.CommitAsync();
 
                 response.Success = true;
-                response.Data = image;
+                response.Data = new { account.Avatar };
                 response.Message = "Avatar updated successfully.";
             }
             catch (Exception ex)
@@ -154,12 +152,12 @@ namespace BusinessLogicLayer.Services
             try
             {
                 var account = await _unitOfWork.AccountRepository.Queryable()
-                                    .Where(a => a.Id == id)
+                                    .Where(a => a.Id == id && a.RoleId == 2)
                                     .FirstOrDefaultAsync();
 
                 if (account == null)
                 {
-                    response.Message = "Account not found!";
+                    response.Message = "Invalid account!";
                     return response;
                 }
 
@@ -180,18 +178,60 @@ namespace BusinessLogicLayer.Services
                 }
 
                 account.ShopName = shopName;
-
-                _unitOfWork.AccountRepository.Update(account);
                 await _unitOfWork.CommitAsync();
 
                 response.Success = true;
-                response.Data = shopName;
+                response.Data = new { account.ShopName };
                 response.Message = "Shop name updated successfully.";
             }
             catch (Exception ex)
             {
                 response.Success = false;
                 response.Message = "Error updating Shop name!";
+                response.Errors.Add(ex.Message);
+            }
+
+            return response;
+        }
+
+        public async Task<BaseResponse> Toggle2FAAsync(int id)
+        {
+            var response = new BaseResponse();
+            try
+            {
+                var account = await _unitOfWork.AccountRepository.Queryable()
+                                    .Where(a => a.Id == id && a.RoleId != 1)
+                                    .FirstOrDefaultAsync();
+
+                if (account == null)
+                {
+                    response.Message = "Invalid account!";
+                    return response;
+                }
+
+                if (account.TwoFactorEnabled == false)
+                {
+                    account.TwoFactorEnabled = true;
+                }
+                else
+                {
+                    account.TwoFactorEnabled = false;
+                }
+
+                await _unitOfWork.CommitAsync();
+
+                var status = account.TwoFactorEnabled
+                             ? "enabled"
+                             : "disable";
+
+                response.Success = true;
+                response.Data = new { Status = account.TwoFactorEnabled ? "Enabled" : "Disabled" };
+                response.Message = $"2FA {status} successfully.";
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = "Error toggle 2FA!";
                 response.Errors.Add(ex.Message);
             }
 

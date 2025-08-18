@@ -14,8 +14,8 @@ namespace BusinessLogicLayer.Interfaces
         Task<BaseResponse> RegisterVendorAsync(RegisterVendorRequest request);
         Task<BaseResponse> SetupPasswordAsync(SetupPasswordRequest request);
         Task<BaseResponse> LoginAsync(LoginRequest request);
+        Task<BaseResponse> VerifyLoginOTP(VerifyLoginOTPRequest request);
         Task<BaseResponse> ForgotPasswordAsync(ForgotPasswordRequest request);
         Task<BaseResponse> ResetPasswordAsync(ResetPasswordRequest request);
-        Task<BaseResponse> Toggle2FAAsync(Toggle2FARequest request);
     }
 }

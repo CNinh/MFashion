@@ -79,5 +79,19 @@ namespace MFashionStoreAPI.Controllers
             }
             return BadRequest(result);
         }
+
+        [HttpPut("toggle-2FA")]
+        public async Task<IActionResult> Toggle2FA()
+        {
+            var accountId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+            var result = await _accountProfileService.Toggle2FAAsync(accountId);
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
     }
 }

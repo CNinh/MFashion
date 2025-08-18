@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using MimeKit.Cryptography;
 using Repository.UnitOfWork;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.Services
@@ -325,6 +327,7 @@ namespace BusinessLogicLayer.Services
                         Token = token,
                         RoleId = 1,
                         Role = adminAccount.Role.RoleName,
+                        Slug = adminAccount.Slug,
                         FullName = adminAccount.FirstName!,
                         Avatar = adminAccount.Avatar,
                         RequiredTwoFactor = adminAccount.TwoFactorEnabled
@@ -353,6 +356,23 @@ namespace BusinessLogicLayer.Services
                     return response;
                 }
 
+                if (account.TwoFactorEnabled == true)
+                {
+                    var otp = GenerateOTP();
+                    account.TwoFactorToken = otp;
+                    account.TwoFactorTokenExpiry = TimeHelper.VietnamTimeZone().AddMinutes(5);
+
+                    await _unitOfWork.CommitAsync();
+
+                    await SendLoginOTPEmail(account.Email, otp);
+
+                    response.Success = true;
+                    response.Data = new { RequiredTwoFactor = true };
+                    response.Message = "OTP has been sent to your email.";
+
+                    return response;
+                }
+
                 var userToken = await GenerateJwtToken(account);
 
                 var loginResponse = new LoginResponse
@@ -360,9 +380,10 @@ namespace BusinessLogicLayer.Services
                     Token = userToken,
                     RoleId = account.RoleId,
                     Role = account.Role.RoleName,
-                    FullName = account.LastName! + " " + account.FirstName!,
+                    Slug = account.Slug,
+                    FullName = account.LastName + " " + account.FirstName,
                     Avatar = account.Avatar,
-                    RequiredTwoFactor = account.TwoFactorEnabled
+                    RequiredTwoFactor = false
                 };
 
                 response.Success = true;
@@ -379,17 +400,66 @@ namespace BusinessLogicLayer.Services
             return response;
         }
 
+        public async Task<BaseResponse> VerifyLoginOTP(VerifyLoginOTPRequest request)
+        {
+            var response = new BaseResponse();
+            try
+            {
+                var account = await _unitOfWork.AccountRepository.Queryable()
+                                    .Where(a => a.Email == request.Email && a.TwoFactorEnabled == true)
+                                    .FirstOrDefaultAsync();
+
+                if (account == null)
+                {
+                    response.Message = "Invalid account!";
+                    return response;
+                }
+
+                if (account.TwoFactorTokenExpiry < TimeHelper.VietnamTimeZone() ||
+                    account.TwoFactorToken != request.OTP)
+                {
+                    response.Message = "Invalid or Expired OTP";
+                    return response;
+                }
+
+                account.TwoFactorToken = null;
+                account.TwoFactorTokenExpiry = null;
+
+                await _unitOfWork.CommitAsync();
+
+                var token = await GenerateJwtToken(account);
+
+                var loginResponse = new LoginResponse
+                {
+                    Token = token,
+                    RoleId = account.RoleId,
+                    Role = account.Role.RoleName,
+                    Slug = account.Slug,
+                    FullName = account.LastName + " " + account.FirstName,
+                    Avatar = account.Avatar,
+                    RequiredTwoFactor = false
+                };
+
+                response.Success = true;
+                response.Data = loginResponse;
+                response.Message = "OTP verified successfully.";
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = "Error verfying OTP!";
+                response.Errors.Add(ex.Message);
+            }
+
+            return response;
+        }
+
         public Task<BaseResponse> ForgotPasswordAsync(ForgotPasswordRequest request)
         {
             throw new NotImplementedException();
         }
 
         public Task<BaseResponse> ResetPasswordAsync(ResetPasswordRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<BaseResponse> Toggle2FAAsync(Toggle2FARequest request)
         {
             throw new NotImplementedException();
         }
@@ -492,6 +562,38 @@ namespace BusinessLogicLayer.Services
             }
 
             return uniqueSlug;
+        }
+
+        private string GenerateOTP()
+        {
+            var bytes = new byte[4];
+            RandomNumberGenerator.Fill(bytes);
+            uint value = BitConverter.ToUInt32(bytes, 0);
+
+            var otp = (value % 900000 + 100000).ToString();
+            return otp;
+        }
+
+        private async Task SendLoginOTPEmail(string email, string otp)
+        {
+            var body = $@"
+                <h2>Login Verification</h2>
+                <p>Your OTP code is: <strong>{otp}</strong></p>
+                <p>This code will be expired in 5 minutes.</p>
+                <p>If you didn't attempt to login, please secure your account immediately!</p>";
+
+            await _emailService.SendEmailAsync(email, "Login OTP Verification", body);
+        }
+
+        private async Task SendResetPasswordEmail(string email, string otp)
+        {
+            var body = $@"
+                <h2>Reset Your Password</h2>
+                <p>This code will be expired in 15 minutes.<p/>
+                <p>If you did't make the request, you can ignore this email.<p/>
+                <p>For security reasons, please do not share this OTP with anyone.<p/>";
+
+            await _emailService.SendEmailAsync(email, "Reset Password OTP", body);
         }
         #endregion
     }

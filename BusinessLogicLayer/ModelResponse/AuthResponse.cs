@@ -21,10 +21,11 @@ namespace BusinessLogicLayer.ModelResponse
 
     public class LoginResponse
     {
-        public required string Token { get; set; }
-        public int RoleId { get; set; }
-        public required string Role { get; set; }
-        public required string FullName { get; set; }
+        public string? Token { get; set; }
+        public int? RoleId { get; set; }
+        public string? Role { get; set; }
+        public string? Slug { get; set; }
+        public string? FullName { get; set; }
         public string? Avatar { get; set; }
         public bool RequiredTwoFactor { get; set; } = false;
     }

@@ -127,7 +127,7 @@ namespace BusinessLogicLayer.Services
                 await _unitOfWork.CommitAsync();
 
                 response.Success = true;
-                response.Data = status;
+                response.Data = new { Status = account.IsDisable ? "Disabled" : "Enabled"};
                 response.Message = $"Accout {status} successfully.";
             }
             catch (Exception ex)
