@@ -69,7 +69,8 @@ namespace DataAccessObject
 
             modelBuilder.Entity<Account>()
                 .HasIndex(a => a.ShopName)
-                .IsUnique();
+                .IsUnique()
+                .HasFilter("[ShopName] IS NOT NULL");
 
             modelBuilder.Entity<Account>()
                 .HasIndex(a => a.Slug)

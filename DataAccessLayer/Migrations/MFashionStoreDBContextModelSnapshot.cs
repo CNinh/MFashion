@@ -145,7 +145,7 @@ namespace DataAccessObject.Migrations
                         .IsUnique()
                         .HasFilter("[Username] IS NOT NULL");
 
-                    b.ToTable("Accounts");
+                    b.ToTable("Accounts", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessObject.Model.Blog", b =>
@@ -183,7 +183,7 @@ namespace DataAccessObject.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Blogs");
+                    b.ToTable("Blogs", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessObject.Model.BlogCategory", b =>
@@ -200,7 +200,7 @@ namespace DataAccessObject.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BlogCategories");
+                    b.ToTable("BlogCategories", (string)null);
 
                     b.HasData(
                         new
@@ -257,7 +257,7 @@ namespace DataAccessObject.Migrations
 
                     b.HasIndex("BlogId");
 
-                    b.ToTable("BlogsImages");
+                    b.ToTable("BlogsImages", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessObject.Model.BlogTag", b =>
@@ -274,7 +274,7 @@ namespace DataAccessObject.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BlogsTags");
+                    b.ToTable("BlogsTags", (string)null);
 
                     b.HasData(
                         new
@@ -336,7 +336,7 @@ namespace DataAccessObject.Migrations
                     b.HasIndex("AccountId")
                         .IsUnique();
 
-                    b.ToTable("Carts");
+                    b.ToTable("Carts", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessObject.Model.CartItem", b =>
@@ -372,7 +372,7 @@ namespace DataAccessObject.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItems");
+                    b.ToTable("CartItems", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessObject.Model.Color", b =>
@@ -389,7 +389,7 @@ namespace DataAccessObject.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Colors");
+                    b.ToTable("Colors", (string)null);
 
                     b.HasData(
                         new
@@ -460,7 +460,7 @@ namespace DataAccessObject.Migrations
 
                     b.HasIndex("BlogId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessObject.Model.Delivery", b =>
@@ -477,7 +477,7 @@ namespace DataAccessObject.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Deliveries");
+                    b.ToTable("Deliveries", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessObject.Model.Material", b =>
@@ -494,7 +494,7 @@ namespace DataAccessObject.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Materials");
+                    b.ToTable("Materials", (string)null);
 
                     b.HasData(
                         new
@@ -559,7 +559,7 @@ namespace DataAccessObject.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessObject.Model.OrderDetail", b =>
@@ -595,7 +595,7 @@ namespace DataAccessObject.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetails", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessObject.Model.PendingVendor", b =>
@@ -629,7 +629,7 @@ namespace DataAccessObject.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PendingVendors");
+                    b.ToTable("PendingVendors", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessObject.Model.Product", b =>
@@ -679,7 +679,7 @@ namespace DataAccessObject.Migrations
                     b.HasIndex("SKU")
                         .IsUnique();
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessObject.Model.ProductCategory", b =>
@@ -696,7 +696,7 @@ namespace DataAccessObject.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductCategories");
+                    b.ToTable("ProductCategories", (string)null);
 
                     b.HasData(
                         new
@@ -755,7 +755,7 @@ namespace DataAccessObject.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductDesign");
+                    b.ToTable("ProductDesign", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessObject.Model.ProductImage", b =>
@@ -785,7 +785,7 @@ namespace DataAccessObject.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductImages");
+                    b.ToTable("ProductImages", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessObject.Model.Review", b =>
@@ -829,7 +829,7 @@ namespace DataAccessObject.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessObject.Model.ReviewImage", b =>
@@ -859,7 +859,7 @@ namespace DataAccessObject.Migrations
 
                     b.HasIndex("ReviewId");
 
-                    b.ToTable("ReviewsImages");
+                    b.ToTable("ReviewsImages", (string)null);
                 });
 
             modelBuilder.Entity("DataAccessObject.Model.Role", b =>
@@ -876,7 +876,7 @@ namespace DataAccessObject.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
 
                     b.HasData(
                         new
@@ -910,7 +910,7 @@ namespace DataAccessObject.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sizes");
+                    b.ToTable("Sizes", (string)null);
 
                     b.HasData(
                         new
@@ -964,7 +964,7 @@ namespace DataAccessObject.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tags", (string)null);
 
                     b.HasData(
                         new

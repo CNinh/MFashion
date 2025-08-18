@@ -34,7 +34,7 @@ namespace BusinessLogicLayer.Services
                 {
                     new Claim(ClaimTypes.Email, email),
                     new Claim("type", "register"),
-                    new Claim("role", role)
+                    new Claim(ClaimTypes.Role, role)
                 }),
                 Expires = DateTime.UtcNow.Add(expireIn),
                 Issuer = _configuration["Jwt:Issuer"],

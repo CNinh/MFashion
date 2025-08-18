@@ -14,6 +14,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.Services
@@ -170,7 +171,7 @@ namespace BusinessLogicLayer.Services
 
                 var email = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
                 var type = principal.Claims.FirstOrDefault(c => c.Type == "type")?.Value;
-                var role = principal.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
+                var role = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
 
                 if (string.IsNullOrEmpty(email) || type != "register")
                 {
@@ -197,7 +198,8 @@ namespace BusinessLogicLayer.Services
                         Email = email,
                         RoleId = 3,
                         IsDisable = false,
-                        TwoFactorEnabled = false
+                        TwoFactorEnabled = false,
+                        Slug = await GenerateSlugAsync($"{email}", null)
                     };
                 }
                 else if (role == "vendor")
@@ -220,6 +222,7 @@ namespace BusinessLogicLayer.Services
                         LastName = pending.LastName,
                         ShopName = pending.ShopName,
                         PhoneNumber = pending.PhoneNumber,
+                        Slug = await GenerateSlugAsync($"{email}", $"{pending.ShopName}"),
                         IsDisable = false,
                         TwoFactorEnabled = false
                     };
@@ -295,7 +298,8 @@ namespace BusinessLogicLayer.Services
                             Email = adminEMail!,
                             FirstName = adminEMail,
                             LastName = "",
-                            RoleId = 1
+                            RoleId = 1,
+                            Slug = ""
                         };
                     }
 
@@ -305,7 +309,7 @@ namespace BusinessLogicLayer.Services
                     {
                         Token = token,
                         RoleId = 1,
-                        Role = adminAccount.Role.RoleName                       
+                        Role = adminAccount.Role.RoleName
                     };
 
                     response.Success = true;
@@ -381,49 +385,89 @@ namespace BusinessLogicLayer.Services
             return result == PasswordVerificationResult.Success;
         }
 
-            private async Task<string> GenerateJwtToken(Account account)
+        private async Task<string> GenerateJwtToken(Account account)
+        {
+            Console.WriteLine($"Generating token for account: {account.Email}");
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]!);
+
+            string roleName;
+            // Id == 0 means admin login from appsettings
+            if (account.Id == 0)
             {
-                Console.WriteLine($"Generating token for account: {account.Email}");
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]!);
-
-                string roleName;
-                // Id == 0 means admin login from appsettings
-                if (account.Id == 0)
+                roleName = "Admin";
+            }
+            else
+            {
+                var role = await _unitOfWork.RoleRepository.GetByIdAsync(account.RoleId);
+                if (role == null)
                 {
-                    roleName = "Admin";
+                    throw new Exception("Role not found");
                 }
-                else
-                {
-                    var role = await _unitOfWork.RoleRepository.GetByIdAsync(account.RoleId);
-                    if (role == null)
-                    {
-                        throw new Exception("Role not found");
-                    }
-                    roleName = role.RoleName;
-                }
+                roleName = role.RoleName;
+            }
 
-                Console.WriteLine($"Role determined: {roleName}");
+            Console.WriteLine($"Role determined: {roleName}");
 
-                var tokenDescriptor = new SecurityTokenDescriptor
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
                 {
-                    Subject = new ClaimsIdentity(new[]
-                    {
                         new Claim(ClaimTypes.NameIdentifier, account.Id.ToString()),
                         new Claim(ClaimTypes.Email, account.Email),
                         new Claim("id", account.Id.ToString()),
                         new Claim(ClaimTypes.Role, roleName),
                         new Claim("name", $"{account.FirstName} {account.LastName}"),
                     }),
-                    Expires = DateTime.UtcNow.AddDays(1),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-                    Issuer = _configuration["Jwt:Issuer"],
-                    Audience = _configuration["Jwt:Audience"]
-                };
+                Expires = DateTime.UtcNow.AddDays(1),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+                Issuer = _configuration["Jwt:Issuer"],
+                Audience = _configuration["Jwt:Audience"]
+            };
 
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                return tokenHandler.WriteToken(token);
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
+        private async Task<string> GenerateSlugAsync(string email, string? shopName)
+        {
+            string baseText;
+
+            if (!string.IsNullOrWhiteSpace(shopName))
+            {
+                baseText = shopName;
             }
+            else if (!string.IsNullOrWhiteSpace(email))
+            {
+                baseText = email.Contains("@")
+                    ? email.Split("@")[0]
+                    : email;
+            }
+            else
+            {
+                baseText = "user";
+            }
+
+            string slug = Regex.Replace(baseText.ToLower().Trim(), @"[^a-z0-9\s-]", "");
+            slug = Regex.Replace(slug, @"\s+", "-"); // space -> -
+            slug = Regex.Replace(slug, @"-+", "-"); // N(-) -> 1(-)
+            slug = slug.Trim('-');
+
+            if (string.IsNullOrWhiteSpace(slug))
+                slug = "user";
+
+            string uniqueSlug = slug;
+            int count = 1;
+
+            while (await _unitOfWork.AccountRepository.Queryable()
+                            .Where(a => a.Slug == uniqueSlug)
+                            .AnyAsync())
+            {
+                uniqueSlug = $"{slug}-{count++}";
+            }
+
+            return uniqueSlug;
+        }
         #endregion
     }
 }

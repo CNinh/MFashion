@@ -39,7 +39,7 @@ namespace BusinessLogicLayer.ModelRequest
         [DefaultValue("Ni")]
         public string LastName { get; set; }
 
-        [Required(ErrorMessage = "Last name is required")]
+        [Required(ErrorMessage = "Shop name is required")]
         [RegularExpression(@"^[a-zA-Z\s]*$", ErrorMessage = "Last name can only contain letters and spaces")]
         [StringLength(50, ErrorMessage = "Last name cannot exceed 50 characters")]
         [DefaultValue("NeGaiShop")]
