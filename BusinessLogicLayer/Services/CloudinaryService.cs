@@ -45,8 +45,7 @@ namespace BusinessLogicLayer.Services
                 var uploadParams = new ImageUploadParams
                 {
                     File = new FileDescription(fileName, fileStream),
-                    Folder = _setting.ImageFolder,
-                    Transformation = new Transformation().Width(150).Height(150).Crop("fill"),
+                    Folder = _setting.ImageFolder
                 };
 
                 result = await _cloudinary.UploadAsync(uploadParams);
@@ -70,6 +69,19 @@ namespace BusinessLogicLayer.Services
                 PublicId = result.PublicId,
                 ResourceType = resourceType
             };
+        }
+
+        public async Task<string> UploadAvatarAsync(Stream fileStream, string fileName)
+        {
+            var uploadParams = new ImageUploadParams
+            {
+                File = new FileDescription(fileName, fileStream),
+                Folder = _setting.ImageFolder,
+                Transformation = new Transformation().Width(150).Height(150).Crop("fill")
+            };
+
+            var result = await _cloudinary.UploadAsync(uploadParams);
+            return result.SecureUrl.ToString();
         }
 
         public async Task<bool> DeleteFileAsync(string publicId, string resourceType)

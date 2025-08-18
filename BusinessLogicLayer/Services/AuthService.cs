@@ -415,7 +415,7 @@ namespace BusinessLogicLayer.Services
                 {
                         new Claim(ClaimTypes.NameIdentifier, account.Id.ToString()),
                         new Claim(ClaimTypes.Email, account.Email),
-                        new Claim("id", account.Id.ToString()),
+                        new Claim("id", account.RoleId.ToString()),
                         new Claim(ClaimTypes.Role, roleName),
                         new Claim("name", $"{account.FirstName} {account.LastName}"),
                     }),

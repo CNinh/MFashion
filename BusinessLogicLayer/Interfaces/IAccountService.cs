@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessLogicLayer.ModelResponse;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,8 @@ namespace BusinessLogicLayer.Interfaces
 {
     public interface IAccountService
     {
+        Task<BaseResponse> GetAllAccount();
+        Task<BaseResponse> GetAccountById(int id);
+        Task<bool> DisableAccount(int id);
     }
 }

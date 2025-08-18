@@ -46,7 +46,7 @@ namespace MFashionStoreAPI.Controllers
         [HttpPost("createProduct")]
         public async Task<IActionResult> CreateProduct(CreateProductRequest request)
         {
-            var accountId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            int accountId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
             var result = await _productService.CreateProduct(accountId, request);
 

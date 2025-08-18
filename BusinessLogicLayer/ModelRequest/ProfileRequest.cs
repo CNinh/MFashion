@@ -8,10 +8,6 @@ using System.Threading.Tasks;
 
 namespace BusinessLogicLayer.ModelRequest
 {
-    public class ProfileRequest
-    {
-    }
-
     public class UpdateProfileRequest
     {
         [Required(ErrorMessage = "First name is required")]

@@ -1,4 +1,5 @@
-﻿using BusinessLogicLayer.ModelResponse;
+﻿using BusinessLogicLayer.ModelRequest;
+using BusinessLogicLayer.ModelResponse;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,9 @@ namespace BusinessLogicLayer.Interfaces
 {
     public interface IAccountProfileService
     {
-        Task<BaseResponse> GetAllAccount();
-        Task<BaseResponse> GetAccountById(int id);
-        Task<BaseResponse> UpdateProfileAsync(int id, Stream fileStream, string fileName);
-        Task<BaseResponse> DeleteAvatarAsync(int id);
+        Task<BaseResponse> GetAccountBySlug(string slug);
+        Task<BaseResponse> UpdateProfileAsync(int id, UpdateProfileRequest request);
+        Task<BaseResponse> UpdateAvatarAsync(int id, Stream fileStream, string fileName);
+        Task<BaseResponse> UpdateShopAsync(int id, string shopName);
     }
 }
