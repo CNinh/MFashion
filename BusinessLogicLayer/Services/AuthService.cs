@@ -543,6 +543,16 @@ namespace BusinessLogicLayer.Services
                 baseText = "user";
             }
 
+            // Add "-" before uppercase letter, except first one
+            baseText = Regex.Replace(baseText, @"([a-z0-9])([A-Z])", "$1-$2");
+
+            // Distinguish uppercase and lowercase
+            baseText = Regex.Replace(baseText, @"([A-Z]+)([A-Z][a-z])", "$1-$2");
+
+            // Add "-" between letter and number
+            baseText = Regex.Replace(baseText, @"([a-zA-Z])([0-9])", "$1-$2");
+            baseText = Regex.Replace(baseText, @"([0-9])([a-zA-Z])", "$1-$2");
+
             string slug = Regex.Replace(baseText.ToLower().Trim(), @"[^a-z0-9\s-]", "");
             slug = Regex.Replace(slug, @"\s+", "-"); // space -> -
             slug = Regex.Replace(slug, @"-+", "-"); // N(-) -> 1(-)
