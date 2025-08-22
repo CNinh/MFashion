@@ -454,14 +454,96 @@ namespace BusinessLogicLayer.Services
             return response;
         }
 
-        public Task<BaseResponse> ForgotPasswordAsync(ForgotPasswordRequest request)
+        public async Task<BaseResponse> ForgotPasswordAsync(ForgotPasswordRequest request)
         {
-            throw new NotImplementedException();
+            var response = new BaseResponse();
+            try
+            {
+                var account = await _unitOfWork.AccountRepository.Queryable()
+                                    .Where(a => a.Email == request.Email)
+                                    .FirstOrDefaultAsync();
+
+                if (account == null)
+                {
+                    response.Message = "Email not found!";
+                    return response;
+                }
+
+                if (account.ResetPasswordToken != null && account.ResetPasswordTokenExpiry > TimeHelper.VietnamTimeZone())
+                {
+                    var remainingMinutes = Math.Ceiling(((DateTime)account.ResetPasswordTokenExpiry
+                                                        - TimeHelper.VietnamTimeZone()).TotalMinutes);
+
+                    response.Message = $"An OTP has already sent. Please wait for {remainingMinutes} minutes to request a new one.";
+                    return response;
+                }
+
+                var otp = GenerateOTP();
+                var otpExpiry = TimeHelper.VietnamTimeZone().AddMinutes(15);
+
+                account.ResetPasswordToken = otp;
+                account.ResetPasswordTokenExpiry = otpExpiry;
+                await _unitOfWork.CommitAsync();
+
+                await SendResetPasswordEmail(account.Email, otp);
+
+                response.Success = true;
+                response.Message = "Password reset OTP has been sent. Please check your email.";
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = "Error performing action!";
+                response.Errors.Add(ex.Message);
+            }
+
+            return response;
         }
 
-        public Task<BaseResponse> ResetPasswordAsync(ResetPasswordRequest request)
+        public async Task<BaseResponse> ResetPasswordAsync(ResetPasswordRequest request)
         {
-            throw new NotImplementedException();
+            var response = new BaseResponse();
+            try
+            {
+                var account = await _unitOfWork.AccountRepository.Queryable()
+                                    .Where(a => a.ResetPasswordToken == request.OTP)
+                                    .FirstOrDefaultAsync();
+
+                if (account == null)
+                {
+                    response.Message = "Invalid OTP!";
+                    return response;
+                }
+
+                if (account.ResetPasswordTokenExpiry < TimeHelper.VietnamTimeZone())
+                {
+                    response.Message = "OTP expired!";
+                    return response;
+                }
+
+                if (request.NewPassword == account.Password)
+                {
+                    response.Message = "New password cannot identical with current password!";
+                    return response;
+                }
+
+                account.Password = HashPassword(account, request.NewPassword);
+                account.ResetPasswordToken = null;
+                account.ResetPasswordTokenExpiry = null;
+
+                await _unitOfWork.CommitAsync();
+
+                response.Success = true;
+                response.Message = "Password changed successfully.";
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = "Error resetting password!";
+                response.Errors.Add(ex.Message);
+            }
+
+            return response;
         }
 
         #region
@@ -599,6 +681,7 @@ namespace BusinessLogicLayer.Services
         {
             var body = $@"
                 <h2>Reset Your Password</h2>
+                <p>Your OTP code is: <strong>{otp}</strong></p>
                 <p>This code will be expired in 15 minutes.<p/>
                 <p>If you did't make the request, you can ignore this email.<p/>
                 <p>For security reasons, please do not share this OTP with anyone.<p/>";

@@ -129,13 +129,15 @@ namespace BusinessLogicLayer.ModelRequest
         [RegularExpression("^[0-9]{6}$", ErrorMessage = "OTP must contain only numbers")]
         public string OTP { get; set; }
 
-        [Required(ErrorMessage = "New password is required")]
+        [Required(ErrorMessage = "Password is required")]
         [MinLength(6, ErrorMessage = "Password must be at least 6 characters")]
-        [MaxLength(100, ErrorMessage = "Password cannot exceed 100 characters")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$",
+            ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, and one number")]
+        [DefaultValue("123#Example")]
         public string NewPassword { get; set; }
 
-        [Required(ErrorMessage = "Confrim new password is required")]
-        [Compare(nameof(NewPassword), ErrorMessage = "Confirm new password must be same as new password")]
+        [Required(ErrorMessage = "Confirm password is required")]
+        [Compare(nameof(NewPassword), ErrorMessage = "Confirm password must be same as password")]
         [DefaultValue("123#Example")]
         public string ConfirmNewPassword { get; set; }
     }
