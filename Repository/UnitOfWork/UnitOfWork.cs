@@ -22,9 +22,11 @@ namespace Repository.UnitOfWork
             AccountRepository = new AccountRepository(_context);
             PendingAccountRepository = new PendingAccountRepository(_context);
             CartRepository = new CartRepository(_context);
+            CartItemRepository = new CartItemRepository(_context);
             RoleRepository = new RoleRepository(_context);
             ProductRepository = new ProductRepository(_context);
             ProductImageRepository = new ProductImageRepository(_context);
+            OrderRepository = new OrderRepository(_context);
             OrderDetailRepository = new OrderDetailRepository(_context);
             ColorRepository = new ColorRepository(_context);
             SizeRepository = new SizeRepository(_context);
@@ -38,9 +40,11 @@ namespace Repository.UnitOfWork
         public IAccountRepository AccountRepository { get; private set; }
         public IPendingAccountRepository PendingAccountRepository { get; private set; }
         public ICartRepository CartRepository { get; private set; }
+        public ICartItemRepository CartItemRepository { get; private set; }
         public IRoleRepository RoleRepository { get; private set; }
         public IProductRepository ProductRepository { get; private set; }
         public IProductImageRepository ProductImageRepository { get; private set; }
+        public IOrderRepository OrderRepository { get; private set; }
         public IOrderDetailRepository OrderDetailRepository { get; private set; }
         public IColorRepository ColorRepository { get; private set; }
         public ISizeRepository SizeRepository { get; private set; }
@@ -49,6 +53,7 @@ namespace Repository.UnitOfWork
         public ITagRepository TagRepository { get; private set; }
         public IDesignRepository DesignRepository { get; private set; }
         public ICategoryRepository CategoryRepository { get; private set; }
+
         public void Dispose()
         {
             _context.Dispose();

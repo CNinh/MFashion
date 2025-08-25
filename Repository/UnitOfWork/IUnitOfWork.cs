@@ -13,9 +13,11 @@ namespace Repository.UnitOfWork
         IAccountRepository AccountRepository { get; }
         IPendingAccountRepository PendingAccountRepository { get; }
         ICartRepository CartRepository { get; }
+        ICartItemRepository CartItemRepository { get; }
         IRoleRepository RoleRepository { get; }
         IProductRepository ProductRepository { get; }
         IProductImageRepository ProductImageRepository { get; }
+        IOrderRepository OrderRepository { get; }
         IOrderDetailRepository OrderDetailRepository { get; }
         IColorRepository ColorRepository { get; }
         ISizeRepository SizeRepository { get; }

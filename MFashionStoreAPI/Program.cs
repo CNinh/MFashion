@@ -16,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
-// 1. Basic Services
+// 1. Configure Json response
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {

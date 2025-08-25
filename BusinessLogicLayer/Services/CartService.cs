@@ -58,5 +58,30 @@ namespace BusinessLogicLayer.Services
 
             return response;
         }
+
+        public Task<BaseResponse> GetCart(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<BaseResponse> AddToCart(int id, int quantity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<BaseResponse> UpdateQuantity(int id, int productId, int quantity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<BaseResponse> RemoveFromCart(int id, int productId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<BaseResponse> ClearItem(int id, int productId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

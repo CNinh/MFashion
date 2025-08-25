@@ -44,7 +44,7 @@ namespace MFashionStoreAPI.Controllers
 
         [Authorize(Policy = "Vendor")]
         [HttpPost("createProduct")]
-        public async Task<IActionResult> CreateProduct(CreateProductRequest request)
+        public async Task<IActionResult> CreateProduct([FromForm] CreateProductRequest request)
         {
             int accountId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
@@ -59,7 +59,7 @@ namespace MFashionStoreAPI.Controllers
 
         [Authorize(Policy = "Vendor")]
         [HttpPut("updateProduct/{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, UpdateProductRequest request)
+        public async Task<IActionResult> UpdateProduct(int id, [FromForm] UpdateProductRequest request)
         {
             var result = await _productService.UpdateProduct(id, request);
 
