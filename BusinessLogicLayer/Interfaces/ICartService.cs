@@ -1,4 +1,5 @@
-﻿using BusinessLogicLayer.ModelResponse;
+﻿using BusinessLogicLayer.ModelRequest;
+using BusinessLogicLayer.ModelResponse;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,9 @@ namespace BusinessLogicLayer.Interfaces
     {
         Task<BaseResponse> CreateCart(int id);
         Task<BaseResponse> GetCart(int id);
-        Task<BaseResponse> AddToCart(int id, int quantity);
-        Task<BaseResponse> UpdateQuantity(int id, int productId, int quantity);
-        Task<BaseResponse> RemoveFromCart(int id, int productId);
-        Task<BaseResponse> ClearItem(int id, int productId);
+        Task<BaseResponse> AddToCart(int id, AddToCartRequest request);
+        Task<BaseResponse> UpdateQuantity(int id, UpdateQuantityRequest request);
+        Task<BaseResponse> RemoveFromCart(int id, RemoveProductRequest request);
+        Task<BaseResponse> ClearItem(int id);
     }
 }

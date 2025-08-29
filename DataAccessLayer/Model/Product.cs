@@ -43,7 +43,6 @@ namespace DataAccessObject.Model
         public virtual ICollection<Material> Materials { get; set; } = new List<Material>();
         public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
         public virtual ICollection<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
-        public virtual ICollection<ProductDesign> ProductDesigns { get; set; } = new List<ProductDesign>();
         public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
         public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
         public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();

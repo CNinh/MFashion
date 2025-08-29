@@ -135,12 +135,6 @@ namespace DataAccessObject
                 .WithMany(p => p.ProductImages)
                 .HasForeignKey(pi => pi.ProductId);
 
-            // Configure 1-N relationship betweeen Product and ProductDesign
-            modelBuilder.Entity<ProductDesign>()
-                .HasOne(pd => pd.Product)
-                .WithMany(p => p.ProductDesigns)
-                .HasForeignKey(pd => pd.ProductId);
-
             // Configure 1-N relationship between ProductCategory and Product
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.ProductCategory)
@@ -196,11 +190,53 @@ namespace DataAccessObject
                 .HasForeignKey(ci => ci.ProductId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            // Configure 1-N relationship between Color and CartItem
+            modelBuilder.Entity<CartItem>()
+                .HasOne(ci => ci.Color)
+                .WithMany(p => p.CartItems)
+                .HasForeignKey(ci => ci.ColorId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Configure 1-N relationship between Delivery and CartItem
+            modelBuilder.Entity<CartItem>()
+                .HasOne(ci => ci.Delivery)
+                .WithMany(p => p.CartItems)
+                .HasForeignKey(ci => ci.DeliveryId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Configure 1-N relationship between Material and CartItem
+            modelBuilder.Entity<CartItem>()
+                .HasOne(ci => ci.Material)
+                .WithMany(p => p.CartItems)
+                .HasForeignKey(ci => ci.MaterialId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Configure 1-N relationship between Size and CartItem
+            modelBuilder.Entity<CartItem>()
+                .HasOne(ci => ci.Size)
+                .WithMany(p => p.CartItems)
+                .HasForeignKey(ci => ci.SizeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Configure 1-N relationship between CartItem and Design
+            modelBuilder.Entity<Design>()
+                .HasOne(ci => ci.CartItem)
+                .WithMany(p => p.Designs)
+                .HasForeignKey(ci => ci.CartItemId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.NoAction);
+
             // Configure 1-N relationship between Account and Order
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Account)
                 .WithMany(a => a.Orders)
                 .HasForeignKey(o => o.AccountId);
+
+            // Configure 1-1 relationship between Order and OrderAddress
+            modelBuilder.Entity<OrderAddress>()
+                .HasOne(od => od.Order)
+                .WithOne(o => o.OrderAddress)
+                .HasForeignKey<OrderAddress>(od => od.OrderId);
 
             // Configure 1-N relationship between Order and OrderDetail
             modelBuilder.Entity<OrderDetail>()
@@ -213,6 +249,42 @@ namespace DataAccessObject
                 .HasOne(od => od.Product)
                 .WithMany(p => p.OrderDetails)
                 .HasForeignKey(od => od.ProductId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Configure 1-N relationship between Color and OrderDetail
+            modelBuilder.Entity<OrderDetail>()
+                .HasOne(od => od.Color)
+                .WithMany(p => p.OrderDetails)
+                .HasForeignKey(od => od.ColorId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Configure 1-N relationship between Delivery and OrderDetail
+            modelBuilder.Entity<OrderDetail>()
+                .HasOne(od => od.Delivery)
+                .WithMany(p => p.OrderDetails)
+                .HasForeignKey(od => od.DeliveryId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Configure 1-N relationship between Material and OrderDetail
+            modelBuilder.Entity<OrderDetail>()
+                .HasOne(od => od.Material)
+                .WithMany(p => p.OrderDetails)
+                .HasForeignKey(od => od.MaterialId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Configure 1-N relationship between Size and OrderDetail
+            modelBuilder.Entity<OrderDetail>()
+                .HasOne(od => od.Size)
+                .WithMany(p => p.OrderDetails)
+                .HasForeignKey(od => od.SizeId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Configure 1-N relationship between OrderDetail and Design
+            modelBuilder.Entity<Design>()
+                .HasOne(od => od.OrderDetail)
+                .WithMany(p => p.Designs)
+                .HasForeignKey(od => od.OrderDetailId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.NoAction);
 
             // Configure 1-N relationship between Order and Review
@@ -277,6 +349,11 @@ namespace DataAccessObject
                 new Color { Id = 5, ThemeColor = "White" },
                 new Color { Id = 6, ThemeColor = "White/Green" },
                 new Color { Id = 7, ThemeColor = "Yellow" }
+            );
+
+            modelBuilder.Entity<Delivery>().HasData(
+                new Delivery { Id = 1, DeliveryType = "Standard Shipping", ExtraFees = 0 },
+                new Delivery { Id = 2, DeliveryType = "Express shipping", ExtraFees = 20 }
             );
 
             modelBuilder.Entity<Size>().HasData(

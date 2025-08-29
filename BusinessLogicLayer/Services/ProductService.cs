@@ -124,7 +124,6 @@ namespace BusinessLogicLayer.Services
                                     .Include(p => p.Materials)
                                     .Include(p => p.Tags)
                                     .Include(p => p.Deliveries)
-                                    .Include(p => p.ProductDesigns)
                                     .AsSplitQuery()
                                     .FirstOrDefaultAsync();
 
@@ -180,7 +179,7 @@ namespace BusinessLogicLayer.Services
                 var deliveryResponse = delivery.Select(d => new DeliveryResponse
                 {
                     Id = d.Id,
-                    Period = d.Period
+                    DeliveryType = d.DeliveryType
                 }).ToList();
 
                 var size = await _unitOfWork.SizeRepository.GetAllAsync();
@@ -205,16 +204,6 @@ namespace BusinessLogicLayer.Services
                     TagName = t.TagName
                 }).ToList();
 
-                var desgin = await _unitOfWork.DesignRepository.Queryable()
-                                    .Where(d => d.ProductId == id)
-                                    .ToListAsync();
-
-                var designResponse = desgin.Select(d => new DesignResponse
-                {
-                    Id = d.Id,
-                    FileUrl = d.FileUrl
-                }).ToList();
-
                 var productResponse = new ProductResponse
                 {
                     Id = product.Id,
@@ -233,7 +222,6 @@ namespace BusinessLogicLayer.Services
                     ImageUrls = image,
                     Colors = colorResponse,
                     Deliveries = deliveryResponse,
-                    Designs = designResponse,
                     Materials = materialResponse,
                     Sizes = sizeResponse,
                     Tags = tagResponse

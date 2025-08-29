@@ -16,11 +16,6 @@ namespace DataAccessObject.Model
 
         [Column(TypeName = "char(10)")]
         public string OrderCode { get; set; }
-        public string FullName { get; set; }
-
-        [Column(TypeName = "varchar(20)")]
-        public string PhoneNumber { get; set; }
-        public string Address { get; set; }
         public decimal TotalPrice { get; set; }
         public DateTime OrderDate { get; set; }
         public enum OrderStatus
@@ -34,6 +29,8 @@ namespace DataAccessObject.Model
 
         public int AccountId { get; set; }
         public Account Account { get; set; }
+
+        public OrderAddress OrderAddress { get; set; }
 
         public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
         public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();

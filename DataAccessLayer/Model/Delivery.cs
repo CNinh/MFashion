@@ -13,8 +13,11 @@ namespace DataAccessObject.Model
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string Period { get; set; }
+        public string DeliveryType { get; set; }
+        public decimal ExtraFees { get; set; }
 
         public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+        public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
     }
 }

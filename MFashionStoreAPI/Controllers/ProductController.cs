@@ -18,7 +18,7 @@ namespace MFashionStoreAPI.Controllers
             _productService = productService;
         }
 
-        [HttpGet("getProductList")]
+        [HttpPost("getProductList")]
         public async Task<IActionResult> GetProductList([FromQuery] ProductListRequest request)
         {
             var result = await _productService.GetProductList(request);

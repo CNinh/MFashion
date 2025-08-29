@@ -8,14 +8,19 @@ using System.Threading.Tasks;
 
 namespace DataAccessObject.Model
 {
-    public class ProductDesign
+    public class Design
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string FileUrl { get; set; }
+        public string PublicId { get; set; }
+        public string ResourceType { get; set; }
 
-        public int ProductId { get; set; }
-        public Product Product { get; set; }
+        public int? CartItemId { get; set; }
+        public CartItem? CartItem { get; set; }
+
+        public int? OrderDetailId { get; set; }
+        public OrderDetail? OrderDetail { get; set; }
     }
 }

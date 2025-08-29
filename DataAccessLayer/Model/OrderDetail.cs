@@ -21,8 +21,22 @@ namespace DataAccessObject.Model
         public Order Order { get; set; }
 
         public string ProductName { get; set; }
-        public string? Image { get; set; }
+        public string Image { get; set; }
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
+
+        public int ColorId { get; set; }
+        public Color Color { get; set; }
+
+        public int DeliveryId { get; set; }
+        public Delivery Delivery { get; set; }
+
+        public int MaterialId { get; set; }
+        public Material Material { get; set; }
+
+        public int SizeId { get; set; }
+        public Size Size { get; set; }
+
+        public virtual ICollection<Design> Designs { get; set; } = new List<Design>();
     }
 }

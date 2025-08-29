@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Repositories
 {
-    public class DesignRepository : GenericRepository<ProductDesign>, IDesignRepository
+    public class DesignRepository : GenericRepository<Design>, IDesignRepository
     {
         public DesignRepository(MFashionStoreDBContext context) : base(context) { }
     }

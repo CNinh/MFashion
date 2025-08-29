@@ -27,7 +27,9 @@ namespace BusinessLogicLayer.ModelResponse
         public string Delivery { get; set; }
         public string Material { get; set; }
         public string Size { get; set; }
+        public List<string> Files { get; set; } = new List<string>();
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
+        public decimal Total { get; set; }
     }
 }

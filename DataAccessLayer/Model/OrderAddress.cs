@@ -1,23 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BusinessLogicLayer.ModelRequest
+namespace DataAccessObject.Model
 {
-    public class OrderDetailRequest
+    public class OrderAddress
     {
-        public int OrderId { get; set; }
-        public int ProductId { get; set; }
-        public string ProductName { get; set; }
-        public string Image { get; set; }
-        public int Quantity { get; set; }
-        public decimal UnitPrice { get; set; }
-    }
-
-    public class OrderAddressRequest
-    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string? CompanyName { get; set; }
@@ -27,8 +22,15 @@ namespace BusinessLogicLayer.ModelRequest
         public string? State { get; set; }
         public string? Province { get; set; }
         public string City { get; set; }
+
+        [Column(TypeName = "nvarchar(12)")]
         public string PostCode { get; set; }
+
+        [Column(TypeName = "varchar(20)")]
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
+
+        public int OrderId { get; set; }
+        public Order Order { get; set; }
     }
 }

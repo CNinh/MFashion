@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Interfaces
 {
-    public interface IDesignRepository : IGenericRepository<ProductDesign>
+    public interface IDesignRepository : IGenericRepository<Design>
     {
     }
 }

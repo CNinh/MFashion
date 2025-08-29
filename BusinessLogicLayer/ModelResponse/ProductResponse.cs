@@ -27,7 +27,6 @@ namespace BusinessLogicLayer.ModelResponse
         public List<DeliveryResponse> Deliveries { get; set; } = new List<DeliveryResponse>();
         public List<MaterialResponse> Materials { get; set; } = new List<MaterialResponse>();
         public List<SizeResponse> Sizes { get; set; } = new List<SizeResponse>();
-        public List<DesignResponse> Designs { get; set; } = new List<DesignResponse>();
         public List<TagResponse> Tags { get; set; } = new List<TagResponse>();
     }
 
@@ -91,19 +90,13 @@ namespace BusinessLogicLayer.ModelResponse
     public class DeliveryResponse
     {
         public int Id { get; set; }
-        public string Period { get; set; }
+        public string DeliveryType { get; set; }
     }
 
     public class SizeResponse
     {
         public int Id { get; set; }
         public string ProductSize { get; set; }
-    }
-
-    public class DesignResponse
-    {
-        public int Id { get; set; }
-        public string FileUrl { get; set; }
     }
 
     public class TagResponse

@@ -44,6 +44,7 @@ namespace BusinessLogicLayer.ModelResponse
         public string? SubAddress { get; set; }
         public string Country { get; set; }
         public string? State { get; set; }
+        public string? Province { get; set; }
         public string City { get; set; }
         public string PostCode { get; set; }
         public string PhoneNumber { get; set; }
