@@ -29,9 +29,6 @@ namespace DataAccessObject.Model
         public int ColorId { get; set; }
         public Color Color { get; set; }
 
-        public int DeliveryId { get; set; }
-        public Delivery Delivery { get; set; }
-
         public int MaterialId { get; set; }
         public Material Material { get; set; }
 

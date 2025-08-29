@@ -30,6 +30,9 @@ namespace DataAccessObject.Model
         public int AccountId { get; set; }
         public Account Account { get; set; }
 
+        public int DeliveryId { get; set; }
+        public Delivery Delivery { get; set; }
+
         public OrderAddress OrderAddress { get; set; }
 
         public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();

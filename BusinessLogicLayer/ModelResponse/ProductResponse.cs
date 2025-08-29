@@ -24,7 +24,6 @@ namespace BusinessLogicLayer.ModelResponse
         public string CategoryName { get; set; }
         public List<string> ImageUrls { get; set; } = new List<string>();
         public List<ColorResponse> Colors { get; set; } = new List<ColorResponse>();
-        public List<DeliveryResponse> Deliveries { get; set; } = new List<DeliveryResponse>();
         public List<MaterialResponse> Materials { get; set; } = new List<MaterialResponse>();
         public List<SizeResponse> Sizes { get; set; } = new List<SizeResponse>();
         public List<TagResponse> Tags { get; set; } = new List<TagResponse>();
@@ -52,6 +51,8 @@ namespace BusinessLogicLayer.ModelResponse
         public int CategoryId { get; set; }
         public DateTime CreateAt { get; set; }
         public List<string> ImageUrls { get; set; } = new List<string>();
+        public List<ColorResponse> Colors { get; set; } = new List<ColorResponse>();
+        public List<SizeResponse> Sizes { get; set; } = new List<SizeResponse>();
         public List<TagResponse> Tags { get; set; } = new List<TagResponse>();
     }
 
@@ -69,6 +70,14 @@ namespace BusinessLogicLayer.ModelResponse
         public List<TagResponse> Tags { get; set; } = new List<TagResponse>();
     }
 
+    public class OptionsResponse
+    {
+        public List<CategoryResponse> Categories { get; set; } = new List<CategoryResponse>();
+        public List<ColorResponse> Colors { get; set; } = new List<ColorResponse>();
+        public List<SizeResponse> Sizes { get; set; } = new List<SizeResponse>();
+        public List<TagResponse> Tags { get; set; } = new List<TagResponse>();
+    }
+
     public class CategoryResponse
     {
         public int Id { get; set; }
@@ -78,6 +87,7 @@ namespace BusinessLogicLayer.ModelResponse
     public class ColorResponse
     {
         public int Id { get; set; }
+        public string HexValue { get; set; }
         public string ThemeColor { get; set; }
     }
 
@@ -85,12 +95,6 @@ namespace BusinessLogicLayer.ModelResponse
     {
         public int Id { get; set; }
         public string MaterialType { get; set; }
-    }
-
-    public class DeliveryResponse
-    {
-        public int Id { get; set; }
-        public string DeliveryType { get; set; }
     }
 
     public class SizeResponse

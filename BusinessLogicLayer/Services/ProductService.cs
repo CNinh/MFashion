@@ -85,7 +85,12 @@ namespace BusinessLogicLayer.Services
                     Colors = p.Colors.Select(c => new ColorResponse
                     {
                         Id = c.Id,
-                        ThemeColor = c.ThemeColor
+                        HexValue = c.SecondaryHex != null
+                                   ? c.PrimaryHex + "/" + c.SecondaryHex
+                                   : c.PrimaryHex,
+                        ThemeColor = c.SecondaryColor != null
+                                     ? c.PrimaryColor + "/" + c.SecondaryColor
+                                     : c.PrimaryColor
                     }).ToList()
                 }).ToList();
 
@@ -170,15 +175,12 @@ namespace BusinessLogicLayer.Services
                 var colorResponse = color.Select(c => new ColorResponse
                 {
                     Id = c.Id,
-                    ThemeColor = c.ThemeColor
-                }).ToList();
-
-                var delivery = await _unitOfWork.DeliveryRepository.GetAllAsync();
-
-                var deliveryResponse = delivery.Select(d => new DeliveryResponse
-                {
-                    Id = d.Id,
-                    DeliveryType = d.DeliveryType
+                    HexValue = c.SecondaryHex != null
+                                   ? c.PrimaryHex + "/" + c.SecondaryHex
+                                   : c.PrimaryHex,
+                    ThemeColor = c.SecondaryColor != null
+                                     ? c.PrimaryColor + "/" + c.SecondaryColor
+                                     : c.PrimaryColor
                 }).ToList();
 
                 var size = await _unitOfWork.SizeRepository.GetAllAsync();
@@ -220,7 +222,6 @@ namespace BusinessLogicLayer.Services
                     CategoryName = product.ProductCategory.CategoryName,
                     ImageUrls = image,
                     Colors = colorResponse,
-                    Deliveries = deliveryResponse,
                     Materials = materialResponse,
                     Sizes = sizeResponse,
                     Tags = tagResponse
@@ -234,6 +235,70 @@ namespace BusinessLogicLayer.Services
             {
                 response.Success = false;
                 response.Message = "Error fetching product detail!";
+                response.Errors.Add(ex.Message);
+            }
+
+            return response;
+        }
+
+        public async Task<BaseResponse> GetCreateOption()
+        {
+            var response = new BaseResponse();
+            try
+            {
+                var category = await _unitOfWork.CategoryRepository.GetAllAsync();
+
+                var categoryResponse = category.Select(c => new CategoryResponse
+                {
+                    Id = c.Id,
+                    CategoryName = c.CategoryName
+                }).ToList();
+
+                var color = await _unitOfWork.ColorRepository.GetAllAsync();
+
+                var colorResponse = color.Select(cl => new ColorResponse
+                {
+                    Id = cl.Id,
+                    HexValue = cl.SecondaryHex != null
+                               ? cl.PrimaryHex + "/" + cl.SecondaryHex
+                               : cl.PrimaryHex,
+                    ThemeColor = cl.SecondaryColor != null
+                                 ? cl.PrimaryColor + "/" + cl.SecondaryColor
+                                 : cl.PrimaryColor
+                }).ToList();
+
+                var size = await _unitOfWork.SizeRepository.GetAllAsync();
+
+                var sizeResponse = size.Select(s => new SizeResponse
+                {
+                    Id = s.Id,
+                    ProductSize = s.ProductSize
+                }).ToList();
+
+                var tag = await _unitOfWork.TagRepository.GetAllAsync();
+
+                var tagResponse = tag.Select(t => new TagResponse
+                {
+                    Id = t.Id,
+                    TagName = t.TagName
+                }).ToList();
+
+                var optionsResponse = new OptionsResponse
+                {
+                    Categories = categoryResponse,
+                    Colors = colorResponse,
+                    Sizes = sizeResponse,
+                    Tags = tagResponse
+                };
+
+                response.Success = true;
+                response.Data = optionsResponse;
+                response.Message = "option list retrieved successfully.";
+            }
+            catch(Exception ex)
+            {
+                response.Success = false;
+                response.Message = "Error retrieving option list!";
                 response.Errors.Add(ex.Message);
             }
 
@@ -273,12 +338,29 @@ namespace BusinessLogicLayer.Services
                     }
                 }
 
+                var colors = new List<Color>();
+
+                if (request.ColorId != null && request.ColorId.Any())
+                {
+                    colors = await _unitOfWork.ColorRepository.Queryable()
+                                            .Where(c => request.ColorId.Contains(c.Id))
+                                            .ToListAsync();
+                }
+
+                var sizes = new List<Size>();
+                if (request.SizeId != null && request.SizeId.Any())
+                {
+                    sizes = await _unitOfWork.SizeRepository.Queryable()
+                                            .Where(s => request.SizeId.Contains(s.Id))
+                                            .ToListAsync();
+                }
+
                 var tags = new List<Tag>();
 
-                if (request.TagIds != null && request.TagIds.Any())
+                if (request.TagId != null && request.TagId.Any())
                 {
                     tags = await _unitOfWork.TagRepository.Queryable()
-                                            .Where(t => request.TagIds.Contains(t.Id))
+                                            .Where(t => request.TagId.Contains(t.Id))
                                             .ToListAsync();
                 }
 
@@ -316,6 +398,8 @@ namespace BusinessLogicLayer.Services
                     AccountId = accountId,
                     CategoryId = request.CategoryId,
                     ProductImages = productImages,
+                    Colors = colors,
+                    Sizes = sizes,
                     Tags = tags,
                     CreateAt = TimeHelper.VietnamTimeZone()
                 };
@@ -324,6 +408,23 @@ namespace BusinessLogicLayer.Services
                 await _unitOfWork.CommitAsync();
 
                 var imageResponse = product.ProductImages.Select(img => img.ImageUrl).ToList();
+
+                var colorResponse = product.Colors.Select(c => new ColorResponse
+                {
+                    Id = c.Id,
+                    HexValue = c.SecondaryHex != null
+                               ? c.PrimaryHex + "/" + c.SecondaryHex
+                               : c.PrimaryHex,
+                    ThemeColor = c.SecondaryColor != null
+                                 ? c.PrimaryColor + "/" + c.SecondaryColor
+                                 : c.PrimaryColor
+                }).ToList();
+
+                var sizeResponse = product.Sizes.Select(s => new SizeResponse
+                {
+                    Id = s.Id,
+                    ProductSize = s.ProductSize
+                }).ToList();
 
                 var tagResponse = product.Tags.Select(t => new TagResponse
                 {
@@ -341,8 +442,11 @@ namespace BusinessLogicLayer.Services
                     SKU = product.SKU,
                     Status = product.Status,
                     CategoryId = product.CategoryId,
+                    AccountId = product.AccountId,
                     CreateAt = TimeHelper.VietnamTimeZone(),
                     ImageUrls = imageResponse,
+                    Colors = colorResponse,
+                    Sizes = sizeResponse,
                     Tags = tagResponse
                 };
 

@@ -82,7 +82,6 @@ namespace BusinessLogicLayer.Services
                 var cartItems = await _unitOfWork.CartItemRepository.Queryable()
                                     .Where(ci => ci.CartId == cart.Id)
                                     .Include(ci => ci.Color)
-                                    .Include(ci => ci.Delivery)
                                     .Include(ci => ci.Material)
                                     .Include(ci => ci.Size)
                                     .Include(ci => ci.Designs)
@@ -103,8 +102,9 @@ namespace BusinessLogicLayer.Services
                         ProductId = ci.ProductId,
                         ProductName = ci.ProductName,
                         Image = ci.Image,
-                        Color = ci.Color.ThemeColor,
-                        Delivery = ci.Delivery.DeliveryType,
+                        Color = ci.Color.SecondaryColor != null
+                                ? ci.Color.PrimaryColor + "/" + ci.Color.SecondaryColor
+                                : ci.Color.PrimaryColor,
                         Material = ci.Material.MaterialType,
                         Size = ci.Size.ProductSize,
                         Files = ci.Designs.Select(ci => ci.FileUrl).ToList(),
@@ -173,7 +173,6 @@ namespace BusinessLogicLayer.Services
                             && ci.ColorId == request.ColorId
                             && ci.MaterialId == request.MaterialId
                             && ci.SizeId == request.SizeId
-                            && ci.DeliveryId == request.DeliveryId
                             && !ci.Designs.Any())
                         .FirstOrDefaultAsync();
                 }
@@ -189,7 +188,6 @@ namespace BusinessLogicLayer.Services
                         ColorId = request.ColorId,
                         MaterialId = request.MaterialId,
                         SizeId = request.SizeId,
-                        DeliveryId = request.DeliveryId,
                         Quantity = request.Quantity,
                         UnitPrice = product.Price,
                         Total = request.Quantity * product.Price
@@ -249,7 +247,6 @@ namespace BusinessLogicLayer.Services
                 var cartItems = await _unitOfWork.CartItemRepository.Queryable()
                                     .Where(ci => ci.CartId == cart.Id)
                                     .Include(ci => ci.Color)
-                                    .Include(ci => ci.Delivery)
                                     .Include(ci => ci.Material)
                                     .Include(ci => ci.Size)
                                     .Include(ci => ci.Designs)
@@ -271,8 +268,9 @@ namespace BusinessLogicLayer.Services
                         ProductId = ci.ProductId,
                         ProductName = ci.ProductName,
                         Image = ci.Image,
-                        Color = ci.Color.ThemeColor,
-                        Delivery = ci.Delivery.DeliveryType,
+                        Color = ci.Color.SecondaryColor != null
+                                ? ci.Color.PrimaryColor + "/" + ci.Color.SecondaryColor
+                                : ci.Color.PrimaryColor,
                         Material = ci.Material.MaterialType,
                         Size = ci.Size.ProductSize,
                         Files = ci.Designs.Select(d => d.FileUrl).ToList(),
@@ -350,7 +348,6 @@ namespace BusinessLogicLayer.Services
                 var cartItems = await _unitOfWork.CartItemRepository.Queryable()
                                     .Where(ci => ci.CartId == cart.Id)
                                     .Include(ci => ci.Color)
-                                    .Include(ci => ci.Delivery)
                                     .Include(ci => ci.Material)
                                     .Include(ci => ci.Size)
                                     .Include(ci => ci.Designs)
@@ -372,8 +369,9 @@ namespace BusinessLogicLayer.Services
                         ProductId = ci.ProductId,
                         ProductName = ci.ProductName,
                         Image = ci.Image,
-                        Color = ci.Color.ThemeColor,
-                        Delivery = ci.Delivery.DeliveryType,
+                        Color = ci.Color.SecondaryColor != null
+                                ? ci.Color.PrimaryColor + "/" + ci.Color.SecondaryColor
+                                : ci.Color.PrimaryColor,
                         Material = ci.Material.MaterialType,
                         Size = ci.Size.ProductSize,
                         Files = ci.Designs.Select(d => d.FileUrl).ToList(),
@@ -444,7 +442,6 @@ namespace BusinessLogicLayer.Services
                 var cartItems = await _unitOfWork.CartItemRepository.Queryable()
                                     .Where(ci => ci.CartId == cart.Id)
                                     .Include(ci => ci.Color)
-                                    .Include(ci => ci.Delivery)
                                     .Include(ci => ci.Material)
                                     .Include(ci => ci.Size)
                                     .Include(ci => ci.Designs)
@@ -466,8 +463,9 @@ namespace BusinessLogicLayer.Services
                         ProductId = ci.ProductId,
                         ProductName = ci.ProductName,
                         Image = ci.Image,
-                        Color = ci.Color.ThemeColor,
-                        Delivery = ci.Delivery.DeliveryType,
+                        Color = ci.Color.SecondaryColor != null
+                                ? ci.Color.PrimaryColor + "/" + ci.Color.SecondaryColor
+                                : ci.Color.PrimaryColor,
                         Material = ci.Material.MaterialType,
                         Size = ci.Size.ProductSize,
                         Files = ci.Designs.Select(d => d.FileUrl).ToList(),

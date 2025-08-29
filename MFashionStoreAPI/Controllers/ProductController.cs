@@ -43,6 +43,19 @@ namespace MFashionStoreAPI.Controllers
         }
 
         [Authorize(Policy = "Vendor")]
+        [HttpGet("getCreateOption")]
+        public async Task<IActionResult> GetCreateOption()
+        {
+            var result = await _productService.GetCreateOption();
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [Authorize(Policy = "Vendor")]
         [HttpPost("createProduct")]
         public async Task<IActionResult> CreateProduct([FromForm] CreateProductRequest request)
         {

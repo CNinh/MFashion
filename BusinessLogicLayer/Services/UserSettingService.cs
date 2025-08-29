@@ -34,6 +34,8 @@ namespace BusinessLogicLayer.Services
                     return response;
                 }
 
+                var isEnabled = account.TwoFactorEnabled ? true : false;
+
                 var status = account.TwoFactorEnabled
                              ? "Enabled"
                              : "Disabled";
@@ -44,6 +46,7 @@ namespace BusinessLogicLayer.Services
                     Slug = account.Slug,
                     FirstName = account.FirstName,
                     LastName = account.LastName,
+                    TwoFactorEnabled = isEnabled,
                     TwoFactorStatus = status,
                 };
 
@@ -92,7 +95,11 @@ namespace BusinessLogicLayer.Services
                              : "disable";
 
                 response.Success = true;
-                response.Data = new { Status = account.TwoFactorEnabled ? "Enabled" : "Disabled" };
+                response.Data = new
+                {
+                    IsEnabled = account.TwoFactorEnabled ? true : false,
+                    Status = account.TwoFactorEnabled ? "Enabled" : "Disabled"
+                };
                 response.Message = $"2FA {status} successfully.";
             }
             catch (Exception ex)

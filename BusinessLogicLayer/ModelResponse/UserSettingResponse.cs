@@ -12,6 +12,7 @@ namespace BusinessLogicLayer.ModelResponse
         public string Slug { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
+        public bool TwoFactorEnabled { get; set; }
         public string TwoFactorStatus { get; set; }
     }
 }

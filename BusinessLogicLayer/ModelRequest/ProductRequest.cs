@@ -49,7 +49,9 @@ namespace BusinessLogicLayer.ModelRequest
 
         [Required(ErrorMessage = "Product images are required!")]
         public List<IFormFile> Images { get; set; }
-        public List<int> TagIds { get; set; } = new List<int>();
+        public List<int> ColorId { get; set; } = new List<int>();
+        public List<int> SizeId { get; set; } = new List<int>();
+        public List<int> TagId { get; set; } = new List<int>();
     }
 
     public class UpdateProductRequest
