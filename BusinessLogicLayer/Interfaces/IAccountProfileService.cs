@@ -14,6 +14,5 @@ namespace BusinessLogicLayer.Interfaces
         Task<BaseResponse> UpdateProfileAsync(int id, UpdateProfileRequest request);
         Task<BaseResponse> UpdateAvatarAsync(int id, Stream fileStream, string fileName);
         Task<BaseResponse> UpdateShopAsync(int id, string shopName);
-        Task<BaseResponse> Toggle2FAAsync(int id);
     }
 }

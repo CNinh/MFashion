@@ -123,7 +123,6 @@ namespace BusinessLogicLayer.Services
                                     .Include(p => p.Sizes)
                                     .Include(p => p.Materials)
                                     .Include(p => p.Tags)
-                                    .Include(p => p.Deliveries)
                                     .AsSplitQuery()
                                     .FirstOrDefaultAsync();
 

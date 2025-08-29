@@ -193,49 +193,5 @@ namespace BusinessLogicLayer.Services
 
             return response;
         }
-
-        public async Task<BaseResponse> Toggle2FAAsync(int id)
-        {
-            var response = new BaseResponse();
-            try
-            {
-                var account = await _unitOfWork.AccountRepository.Queryable()
-                                    .Where(a => a.Id == id && a.RoleId != 1)
-                                    .FirstOrDefaultAsync();
-
-                if (account == null)
-                {
-                    response.Message = "Invalid account!";
-                    return response;
-                }
-
-                if (account.TwoFactorEnabled == false)
-                {
-                    account.TwoFactorEnabled = true;
-                }
-                else
-                {
-                    account.TwoFactorEnabled = false;
-                }
-
-                await _unitOfWork.CommitAsync();
-
-                var status = account.TwoFactorEnabled
-                             ? "enabled"
-                             : "disable";
-
-                response.Success = true;
-                response.Data = new { Status = account.TwoFactorEnabled ? "Enabled" : "Disabled" };
-                response.Message = $"2FA {status} successfully.";
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.Message = "Error toggle 2FA!";
-                response.Errors.Add(ex.Message);
-            }
-
-            return response;
-        }
     }
 }

@@ -20,6 +20,11 @@ namespace MFashionStoreAPI.Controllers
             _accountProfileService = accountProfileService;
         }
 
+        private int GetUserId()
+        {
+            return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        }
+
         [HttpGet("getProfile")]
         public async Task<IActionResult> GetAccountBySlug([FromQuery, Required] string slug)
         {
@@ -35,7 +40,7 @@ namespace MFashionStoreAPI.Controllers
         [HttpPut("updateProfile")]
         public async Task<IActionResult> UpdateProfile(UpdateProfileRequest request)
         {
-            int accountId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            int accountId = GetUserId();
 
             var result = await _accountProfileService.UpdateProfileAsync(accountId, request);
 
@@ -54,8 +59,7 @@ namespace MFashionStoreAPI.Controllers
                 return BadRequest("No file uploaded.");
             }
 
-            int accountId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-
+            int accountId = GetUserId();
             using var stream = file.OpenReadStream();
             var fileName = Path.GetFileNameWithoutExtension(file.FileName);
             var result = await _accountProfileService.UpdateAvatarAsync(accountId, stream, fileName);
@@ -70,23 +74,9 @@ namespace MFashionStoreAPI.Controllers
         [HttpPut("updateShopName")]
         public async Task<IActionResult> UpdateShop([FromQuery, Required] string name)
         {
-            int accountId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            int accountId = GetUserId();
 
             var result = await _accountProfileService.UpdateShopAsync(accountId, name);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
-
-        [HttpPut("toggle-2FA")]
-        public async Task<IActionResult> Toggle2FA()
-        {
-            var accountId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-
-            var result = await _accountProfileService.Toggle2FAAsync(accountId);
-
             if (result.Success)
             {
                 return Ok(result);

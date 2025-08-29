@@ -101,6 +101,15 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("Customer", policy =>
         policy.RequireClaim("id", "3"));
 
+    options.AddPolicy("User", policy =>
+        policy.RequireAssertion(context =>
+            context.User.HasClaim(c =>
+                (c.Type == "id" && c.Value == "2") ||
+                (c.Type == "id" && c.Value == "3")
+            )
+        )
+    );
+
     options.AddPolicy("AllRoles", policy =>
         policy.RequireAssertion(context =>
             context.User.HasClaim(c =>
@@ -131,6 +140,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IAccountProfileService, AccountProfileService>();
+builder.Services.AddScoped<IUserSettingService, UserSettingService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
