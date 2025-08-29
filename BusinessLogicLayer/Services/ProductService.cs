@@ -559,11 +559,29 @@ namespace BusinessLogicLayer.Services
                     }
                 }
 
-                // Update tags
-                if (request.TagIds != null && request.TagIds.Any())
+
+                if (request.ColorId != null && request.ColorId.Any())
+                {
+                    var colors = await _unitOfWork.ColorRepository.Queryable()
+                                    .Where(c => request.ColorId.Contains(c.Id))
+                                    .ToListAsync();
+
+                    product.Colors = colors;
+                }
+
+                if (request.SizeId != null && request.SizeId.Any())
+                {
+                    var sizes = await _unitOfWork.SizeRepository.Queryable()
+                                    .Where(s => request.SizeId.Contains(s.Id))
+                                    .ToListAsync();
+
+                    product.Sizes = sizes;
+                }
+                
+                if (request.TagId != null && request.TagId.Any())
                 {
                     var tags = await _unitOfWork.TagRepository.Queryable()
-                                     .Where(t => request.TagIds.Contains(t.Id))
+                                     .Where(t => request.TagId.Contains(t.Id))
                                      .ToListAsync();
 
                     product.Tags = tags;
@@ -573,6 +591,23 @@ namespace BusinessLogicLayer.Services
                 await _unitOfWork.CommitAsync();
 
                 var imageResponse = product.ProductImages.Select(img => img.ImageUrl).ToList();
+
+                var colorResponse = product.Colors.Select(c => new ColorResponse
+                {
+                    Id = c.Id,
+                    HexValue = c.SecondaryHex != null
+                               ? c.PrimaryHex + "/" + c.SecondaryHex
+                               : c.PrimaryHex,
+                    ThemeColor = c.SecondaryColor != null
+                                 ? c.PrimaryColor + "/" + c.SecondaryColor
+                                 : c.PrimaryColor
+                }).ToList();
+
+                var sizeResponse = product.Sizes.Select(s => new SizeResponse
+                {
+                    Id = s.Id,
+                    ProductSize = s.ProductSize
+                }).ToList();
 
                 var tagResponse = product.Tags.Select(t => new TagResponse
                 {
@@ -591,6 +626,8 @@ namespace BusinessLogicLayer.Services
                     Status = product.Status,
                     CategoryId = product.CategoryId,
                     ImageUrls = imageResponse,
+                    Colors = colorResponse,
+                    Sizes = sizeResponse,
                     Tags = tagResponse
                 };
 

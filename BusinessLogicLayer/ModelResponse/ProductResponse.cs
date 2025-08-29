@@ -67,6 +67,8 @@ namespace BusinessLogicLayer.ModelResponse
         public Product.ProductStatus Status { get; set; }
         public int CategoryId { get; set; }
         public List<string> ImageUrls { get; set; } = new List<string>();
+        public List<ColorResponse> Colors { get; set; } = new List<ColorResponse>();
+        public List<SizeResponse> Sizes { get; set; }= new List<SizeResponse>();
         public List<TagResponse> Tags { get; set; } = new List<TagResponse>();
     }
 
