@@ -377,8 +377,8 @@ namespace BusinessLogicLayer.Services
 
                 if (request.Quantity > 0)
                 {
-                    if (request.Status != Product.ProductStatus.OutOfStock &&
-                        request.Status != Product.ProductStatus.OnBackOrder)
+                    if (request.Status == Product.ProductStatus.OutOfStock &&
+                        request.Status == Product.ProductStatus.OnBackOrder)
                     {
                         response.Message = "Status has to be In stock or On sale!";
                         return response;
@@ -387,8 +387,8 @@ namespace BusinessLogicLayer.Services
                 }
                 else
                 {
-                    if (request.Status != Product.ProductStatus.InStock &&
-                        request.Status != Product.ProductStatus.OnSale)
+                    if (request.Status == Product.ProductStatus.InStock &&
+                        request.Status == Product.ProductStatus.OnSale)
                     {
                         response.Message = "Status has to be Out of stock or On back order!";
                         return response;
@@ -500,8 +500,8 @@ namespace BusinessLogicLayer.Services
 
                 if (request.Quantity > 0)
                 {
-                    if (request.Status != Product.ProductStatus.OutOfStock &&
-                        request.Status != Product.ProductStatus.OnBackOrder)
+                    if (request.Status == Product.ProductStatus.OutOfStock &&
+                        request.Status == Product.ProductStatus.OnBackOrder)
                     {
                         response.Message = "Status has to be In stock or On sale!";
                         return response;
@@ -510,8 +510,8 @@ namespace BusinessLogicLayer.Services
                 }
                 else
                 {
-                    if (request.Status != Product.ProductStatus.InStock &&
-                        request.Status != Product.ProductStatus.OnSale)
+                    if (request.Status == Product.ProductStatus.InStock &&
+                        request.Status == Product.ProductStatus.OnSale)
                     {
                         response.Message = "Status has to be Out of stock or On back order!";
                         return response;
