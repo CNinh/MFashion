@@ -74,10 +74,17 @@ namespace BusinessLogicLayer.ModelResponse
 
     public class OptionsResponse
     {
+        public List<StatusResponse> Statuses { get; set; } = new List<StatusResponse>();
         public List<CategoryResponse> Categories { get; set; } = new List<CategoryResponse>();
         public List<ColorResponse> Colors { get; set; } = new List<ColorResponse>();
         public List<SizeResponse> Sizes { get; set; } = new List<SizeResponse>();
         public List<TagResponse> Tags { get; set; } = new List<TagResponse>();
+    }
+
+    public class StatusResponse
+    {
+        public int Id { get; set; }
+        public string Status { get; set; }
     }
 
     public class CategoryResponse

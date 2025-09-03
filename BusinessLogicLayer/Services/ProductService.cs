@@ -246,6 +246,14 @@ namespace BusinessLogicLayer.Services
             var response = new BaseResponse();
             try
             {
+                var statusResponse = Enum.GetValues(typeof(Product.ProductStatus))
+                    .Cast<Product.ProductStatus>()
+                    .Select(s => new StatusResponse
+                    {
+                        Id = (int)s,
+                        Status = s.ToString()
+                    }).ToList();
+
                 var category = await _unitOfWork.CategoryRepository.GetAllAsync();
 
                 var categoryResponse = category.Select(c => new CategoryResponse
@@ -285,6 +293,7 @@ namespace BusinessLogicLayer.Services
 
                 var optionsResponse = new OptionsResponse
                 {
+                    Statuses = statusResponse,
                     Categories = categoryResponse,
                     Colors = colorResponse,
                     Sizes = sizeResponse,

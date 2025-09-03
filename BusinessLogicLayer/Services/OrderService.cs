@@ -18,12 +18,7 @@ namespace BusinessLogicLayer.Services
             _unitOfWork = unitOfWork;
         }
 
-        public Task<BaseResponse> CancelOrder(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<BaseResponse> CreateOrder()
+        public Task<BaseResponse> GetOrderList(int id)
         {
             throw new NotImplementedException();
         }
@@ -33,7 +28,12 @@ namespace BusinessLogicLayer.Services
             throw new NotImplementedException();
         }
 
-        public Task<BaseResponse> GetOrderList(int id)
+        public Task<BaseResponse> CreateOrder()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<BaseResponse> CancelOrder(int id)
         {
             throw new NotImplementedException();
         }
