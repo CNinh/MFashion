@@ -24,7 +24,7 @@ namespace MFashionStoreAPI.Controllers
         }
 
         [HttpPost("getProductList")]
-        public async Task<IActionResult> GetProductList([FromQuery] ProductListRequest request)
+        public async Task<IActionResult> GetProductList([FromBody] ProductListRequest request)
         {
             int? accountId = string.IsNullOrEmpty(GetAccountId()) ? null : int.Parse(GetAccountId());
 
@@ -38,7 +38,7 @@ namespace MFashionStoreAPI.Controllers
         }
 
         [HttpPost("getProductByVendor")]
-        public async Task<IActionResult> GetProductByVendor([FromQuery] GetProductByVendorRequest request)
+        public async Task<IActionResult> GetProductByVendor([FromBody] GetProductByVendorRequest request)
         {
             int? accountId = string.IsNullOrEmpty(GetAccountId()) ? null : int.Parse(GetAccountId());
 
