@@ -15,7 +15,6 @@ namespace BusinessLogicLayer.ModelRequest
 
     public class ProductListRequest
     {
-        public int? UserId { get; set; }
         public string? ProductName { get; set; }
         public int? MinPrice { get; set; }
         public int? MaxPrice { get; set; }
@@ -29,7 +28,6 @@ namespace BusinessLogicLayer.ModelRequest
     {
         [Required]
         public string Slug { get; set; }
-        public int? UserId { get; set; }
         public string? ProductName { get; set; }
         public int? MinPrice { get; set; }
         public int? MaxPrice { get; set; }

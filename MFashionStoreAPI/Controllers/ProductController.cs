@@ -18,10 +18,17 @@ namespace MFashionStoreAPI.Controllers
             _productService = productService;
         }
 
-        [HttpPost("getProductList")]
-        public async Task<IActionResult> GetProductList([FromBody] ProductListRequest request)
+        private string GetAccountId()
         {
-            var result = await _productService.GetProductList(request);
+            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        }
+
+        [HttpPost("getProductList")]
+        public async Task<IActionResult> GetProductList([FromQuery] ProductListRequest request)
+        {
+            int? accountId = string.IsNullOrEmpty(GetAccountId()) ? null : int.Parse(GetAccountId());
+
+            var result = await _productService.GetProductList(accountId, request);
 
             if (result.Success)
             {
@@ -31,9 +38,11 @@ namespace MFashionStoreAPI.Controllers
         }
 
         [HttpPost("getProductByVendor")]
-        public async Task<IActionResult> GetProductByVendor([FromBody] GetProductByVendorRequest request)
+        public async Task<IActionResult> GetProductByVendor([FromQuery] GetProductByVendorRequest request)
         {
-            var result = await _productService.GetProductByVendor(request);
+            int? accountId = string.IsNullOrEmpty(GetAccountId()) ? null : int.Parse(GetAccountId());
+
+            var result = await _productService.GetProductByVendor(accountId, request);
 
             if (result.Success)
             {

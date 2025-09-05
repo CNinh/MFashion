@@ -28,7 +28,7 @@ namespace BusinessLogicLayer.Services
             _cloudinaryService = cloudinaryService;
         }
 
-        public async Task<BaseResponse<PageResult<ProductListResponse>>> GetProductList(ProductListRequest request)
+        public async Task<BaseResponse<PageResult<ProductListResponse>>> GetProductList(int? id, ProductListRequest request)
         {
             var response = new BaseResponse<PageResult<ProductListResponse>>();
             try
@@ -40,7 +40,7 @@ namespace BusinessLogicLayer.Services
                     (!request.MaxPrice.HasValue || product.Price <= request.MaxPrice.Value);
 
                 // Check user
-                var account = await _unitOfWork.AccountRepository.GetByIdAsync(request.UserId);
+                var account = await _unitOfWork.AccountRepository.GetByIdAsync(id);
 
                 if ((account != null && account.RoleId == 1) || (account != null && account.RoleId == 2))
                 {
@@ -115,7 +115,7 @@ namespace BusinessLogicLayer.Services
             return response;
         }
 
-        public async Task<BaseResponse<PageResult<ProductListResponse>>> GetProductByVendor(GetProductByVendorRequest request)
+        public async Task<BaseResponse<PageResult<ProductListResponse>>> GetProductByVendor(int? id, GetProductByVendorRequest request)
         {
             var response = new BaseResponse<PageResult<ProductListResponse>>();
             try
@@ -138,7 +138,7 @@ namespace BusinessLogicLayer.Services
                     (!request.MaxPrice.HasValue || product.Price <= request.MaxPrice.Value);
 
                 // Check user
-                var account = await _unitOfWork.AccountRepository.GetByIdAsync(request.UserId);
+                var account = await _unitOfWork.AccountRepository.GetByIdAsync(id);
 
                 if ((account != null && account.RoleId == 1) || (account != null && account.RoleId == 2))
                 {
@@ -475,8 +475,8 @@ namespace BusinessLogicLayer.Services
 
                 if (request.Quantity > 0)
                 {
-                    if (request.Status == Product.ProductStatus.OutOfStock &&
-                        request.Status == Product.ProductStatus.OnBackOrder)
+                    if (request.Status != Product.ProductStatus.InStock &&
+                        request.Status != Product.ProductStatus.OnSale)
                     {
                         response.Message = "Status has to be In stock or On sale!";
                         return response;
@@ -485,8 +485,8 @@ namespace BusinessLogicLayer.Services
                 }
                 else
                 {
-                    if (request.Status == Product.ProductStatus.InStock &&
-                        request.Status == Product.ProductStatus.OnSale)
+                    if (request.Status != Product.ProductStatus.OutOfStock &&
+                        request.Status != Product.ProductStatus.OnBackOrder)
                     {
                         response.Message = "Status has to be Out of stock or On back order!";
                         return response;
@@ -598,8 +598,8 @@ namespace BusinessLogicLayer.Services
 
                 if (request.Quantity > 0)
                 {
-                    if (request.Status == Product.ProductStatus.OutOfStock &&
-                        request.Status == Product.ProductStatus.OnBackOrder)
+                    if (request.Status != Product.ProductStatus.InStock &&
+                        request.Status != Product.ProductStatus.OnSale)
                     {
                         response.Message = "Status has to be In stock or On sale!";
                         return response;
@@ -608,8 +608,8 @@ namespace BusinessLogicLayer.Services
                 }
                 else
                 {
-                    if (request.Status == Product.ProductStatus.InStock &&
-                        request.Status == Product.ProductStatus.OnSale)
+                    if (request.Status != Product.ProductStatus.OutOfStock &&
+                        request.Status != Product.ProductStatus.OnBackOrder)
                     {
                         response.Message = "Status has to be Out of stock or On back order!";
                         return response;
