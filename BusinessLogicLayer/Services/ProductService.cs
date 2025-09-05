@@ -542,7 +542,7 @@ namespace BusinessLogicLayer.Services
                     Quantity = request.Quantity,
                     Price = request.Price,
                     Description = request.Description,
-                    SKU = GenerateSku(request.CategoryId),
+                    SKU = request.SKU ?? GenerateSku(request.CategoryId),
                     Status = status,
                     AccountId = accountId,
                     CategoryId = request.CategoryId,
@@ -663,6 +663,7 @@ namespace BusinessLogicLayer.Services
                 product.Quantity = request.Quantity;
                 product.Price = request.Price;
                 product.Description = request.Description;
+                product.SKU = request.SKU ?? GenerateSku(request.CategoryId);
                 product.Status = status;
                 product.CategoryId = request.CategoryId;
 
@@ -857,7 +858,7 @@ namespace BusinessLogicLayer.Services
             var currentDayString = currentDay.ToString("yyyyMMdd");
             
             var skuInDay = _unitOfWork.ProductRepository.Queryable()
-                .Where(p => p.CreateAt.Date == currentDay)
+                .Where(p => p.CreateAt.Date == currentDay.Date)
                 .Count();
 
             return $"{prefix}-{currentDayString}-{skuInDay + 1:D3}";

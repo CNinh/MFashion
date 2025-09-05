@@ -81,6 +81,9 @@ namespace BusinessLogicLayer.ModelRequest
         [Required(ErrorMessage = "Description of product is required!")]
         public string Description { get; set; }
 
+        [StringLength(50, ErrorMessage = "SKU cannot exceed 50 characters!")]
+        public string? SKU { get; set; }
+
         [Required(ErrorMessage = "Status of product is required!")]
         public Product.ProductStatus Status { get; set; }
 
@@ -117,6 +120,10 @@ namespace BusinessLogicLayer.ModelRequest
         public string Description { get; set; }
 
         [Required(ErrorMessage = "Status of product is required!")]
+
+        [StringLength(50, ErrorMessage = "SKU cannot exceed 50 characters!")]
+        public string? SKU { get; set; }
+
         public Product.ProductStatus Status { get; set; }
 
         [Required(ErrorMessage = "Category is required!")]
