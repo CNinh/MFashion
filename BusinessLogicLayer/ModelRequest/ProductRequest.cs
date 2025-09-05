@@ -25,6 +25,20 @@ namespace BusinessLogicLayer.ModelRequest
         public bool Descending { get; set; } = false;
     }
 
+    public class GetProductByVendorRequest
+    {
+        [Required]
+        public string Slug { get; set; }
+        public int? UserId { get; set; }
+        public string? ProductName { get; set; }
+        public int? MinPrice { get; set; }
+        public int? MaxPrice { get; set; }
+        public int PageIndex { get; set; } = 1;
+        public int PageSize { get; set; } = 20;
+        public string SortBy { get; set; } = "";
+        public bool Descending { get; set; } = false;
+    }
+
     public class CreateProductRequest
     {
         [Required(ErrorMessage = "Product name is required!")]

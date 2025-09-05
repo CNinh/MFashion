@@ -39,9 +39,107 @@ namespace BusinessLogicLayer.Services
                     (!request.MinPrice.HasValue || product.Price >= request.MinPrice.Value) &&
                     (!request.MaxPrice.HasValue || product.Price <= request.MaxPrice.Value);
 
+                // Check user
                 var account = await _unitOfWork.AccountRepository.GetByIdAsync(request.UserId);
 
+                if ((account != null && account.RoleId == 1) || (account != null && account.RoleId == 2))
+                {
+                    // Display all product
+                }
+                else
+                {
+                    filter = filter.And(p => p.Quantity > 0); // Display in stock product
+                }
+
+                // Sort
+                Expression<Func<Product, object>> orderByExpression = request.SortBy?.ToLower() switch
+                {
+                    "productname" => p => p.ProductName,
+                    "price" => p => p.Price,
+                    "createat" => p => p.CreateAt,
+                    _ => p => p.Id
+                };
+
+                // Include entities
+                Func<IQueryable<Product>, IQueryable<Product>> customQuery = query =>
+                    query.Include(p => p.ProductImages)
+                         .Include(p => p.Colors);
+
+                // Get paginated data and filter
+                (IEnumerable<Product> products, int totalCount) = await _unitOfWork.ProductRepository.GetPagedAndFilteredAsync(
+                    filter,
+                    request.PageIndex,
+                    request.PageSize,
+                    orderByExpression,
+                    request.Descending,
+                    null,
+                    customQuery
+                );
+
+                var productList = products.Select(p => new ProductListResponse
+                {
+                    Id = p.Id,
+                    ImageUrl = p.ProductImages.First().ImageUrl,
+                    ProductName = p.ProductName,
+                    Price = p.Price,
+                    Colors = p.Colors.Select(c => new ColorResponse
+                    {
+                        Id = c.Id,
+                        HexValue = c.SecondaryHex != null
+                                   ? c.PrimaryHex + "/" + c.SecondaryHex
+                                   : c.PrimaryHex,
+                        ThemeColor = c.SecondaryColor != null
+                                     ? c.PrimaryColor + "/" + c.SecondaryColor
+                                     : c.PrimaryColor
+                    }).ToList()
+                }).ToList();
+
+                var pageResult = new PageResult<ProductListResponse>
+                {
+                    Data = productList,
+                    TotalCount = totalCount
+                };
+
+                response.Success = true;
+                response.Data = pageResult;
+                response.Message = "Product list fetched successfully.";
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = "Error fetching product list!";
+                response.Errors.Add(ex.Message);
+            }
+
+            return response;
+        }
+
+        public async Task<BaseResponse<PageResult<ProductListResponse>>> GetProductByVendor(GetProductByVendorRequest request)
+        {
+            var response = new BaseResponse<PageResult<ProductListResponse>>();
+            try
+            {
+                var provider = await _unitOfWork.AccountRepository.Queryable()
+                                    .Where(a => a.Slug == request.Slug && a.RoleId == 2)
+                                    .FirstOrDefaultAsync();
+
+                if (provider == null)
+                {
+                    response.Message = "Provider not found!";
+                    return response;
+                }
+
+                // Filter
+                Expression<Func<Product, bool>> filter = product =>
+                    (product.Account.Slug == request.Slug && product.Account.RoleId == 2) &&
+                    (string.IsNullOrEmpty(request.ProductName) || product.ProductName.Contains(request.ProductName)) &&
+                    (!request.MinPrice.HasValue || product.Price >= request.MinPrice.Value) &&
+                    (!request.MaxPrice.HasValue || product.Price <= request.MaxPrice.Value);
+
                 // Check user
+                var account = await _unitOfWork.AccountRepository.GetByIdAsync(request.UserId);
+
                 if ((account != null && account.RoleId == 1) || (account != null && account.RoleId == 2))
                 {
                     // Display all product

@@ -19,9 +19,21 @@ namespace MFashionStoreAPI.Controllers
         }
 
         [HttpPost("getProductList")]
-        public async Task<IActionResult> GetProductList([FromQuery] ProductListRequest request)
+        public async Task<IActionResult> GetProductList([FromBody] ProductListRequest request)
         {
             var result = await _productService.GetProductList(request);
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpPost("getProductByVendor")]
+        public async Task<IActionResult> GetProductByVendor([FromBody] GetProductByVendorRequest request)
+        {
+            var result = await _productService.GetProductByVendor(request);
 
             if (result.Success)
             {

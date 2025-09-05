@@ -11,6 +11,7 @@ namespace BusinessLogicLayer.Interfaces
     public interface IProductService
     {
         Task<BaseResponse<PageResult<ProductListResponse>>> GetProductList(ProductListRequest request);
+        Task<BaseResponse<PageResult<ProductListResponse>>> GetProductByVendor(GetProductByVendorRequest request);
         Task<BaseResponse> GetProductById (int id);
         Task<BaseResponse> GetCreateOption();
         Task<BaseResponse> CreateProduct (int accountId, CreateProductRequest request);
