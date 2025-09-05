@@ -89,8 +89,14 @@ namespace BusinessLogicLayer.ModelRequest
 
         [Required(ErrorMessage = "Product images are required!")]
         public List<IFormFile> Images { get; set; }
+
+        [Required(ErrorMessage = "Color is required!")]
         public List<int> ColorId { get; set; } = new List<int>();
+
+        [Required(ErrorMessage = "Size is required!")]
         public List<int> SizeId { get; set; } = new List<int>();
+
+        [Required(ErrorMessage = "Tag is required!")]
         public List<int> TagId { get; set; } = new List<int>();
     }
 
@@ -120,8 +126,14 @@ namespace BusinessLogicLayer.ModelRequest
 
         [Required(ErrorMessage = "Product images are required!")]
         public List<IFormFile> Images { get; set; }
+
+        [Required(ErrorMessage = "Color is required!")]
         public List<int> ColorId { get; set; } = new List<int>();
+
+        [Required(ErrorMessage = "Size is required!")]
         public List<int> SizeId { get; set; } = new List<int>();
+
+        [Required(ErrorMessage = "Tag is required!")]
         public List<int> TagId { get; set; } = new List<int>();
     }
 }

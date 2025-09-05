@@ -63,7 +63,8 @@ namespace BusinessLogicLayer.Services
                 // Include entities
                 Func<IQueryable<Product>, IQueryable<Product>> customQuery = query =>
                     query.Include(p => p.ProductImages)
-                         .Include(p => p.Colors);
+                         .Include(p => p.Colors)
+                         .Include(p => p.Sizes);
 
                 // Get paginated data and filter
                 (IEnumerable<Product> products, int totalCount) = await _unitOfWork.ProductRepository.GetPagedAndFilteredAsync(
@@ -183,7 +184,8 @@ namespace BusinessLogicLayer.Services
                 // Include entities
                 Func<IQueryable<Product>, IQueryable<Product>> customQuery = query =>
                     query.Include(p => p.ProductImages)
-                         .Include(p => p.Colors);
+                         .Include(p => p.Colors)
+                         .Include(p => p.Sizes);
 
                 // Get paginated data and filter
                 (IEnumerable<Product> products, int totalCount) = await _unitOfWork.ProductRepository.GetPagedAndFilteredAsync(
