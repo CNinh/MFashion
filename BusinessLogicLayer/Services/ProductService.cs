@@ -76,27 +76,49 @@ namespace BusinessLogicLayer.Services
                     customQuery
                 );
 
-                var productList = products.Select(p => new ProductListResponse
+                var productResponse = new List<ProductListResponse>();
+
+                foreach (var product in products)
                 {
-                    Id = p.Id,
-                    ImageUrl = p.ProductImages.First().ImageUrl,
-                    ProductName = p.ProductName,
-                    Price = p.Price,
-                    Colors = p.Colors.Select(c => new ColorResponse
+                    var orderDetail = await _unitOfWork.OrderDetailRepository.Queryable()
+                                            .Where(po => po.ProductId == product.Id &&
+                                                         po.Order.Status == Order.OrderStatus.Delivered)
+                                            .Include(po => po.Order)
+                                            .ToListAsync();
+
+                    var totalSold = orderDetail.Sum(oi => oi.Quantity);
+
+                    var productList = new ProductListResponse
                     {
-                        Id = c.Id,
-                        HexValue = c.SecondaryHex != null
-                                   ? c.PrimaryHex + "/" + c.SecondaryHex
-                                   : c.PrimaryHex,
-                        ThemeColor = c.SecondaryColor != null
-                                     ? c.PrimaryColor + "/" + c.SecondaryColor
-                                     : c.PrimaryColor
-                    }).ToList()
-                }).ToList();
+                        Id = product.Id,
+                        ImageUrl = product.ProductImages.First().ImageUrl,
+                        ProductName = product.ProductName,
+                        Quantity = product.Quantity,
+                        Price = product.Price,
+                        TotalSold = totalSold,
+                        Colors = product.Colors.Select(c => new ColorResponse
+                        {
+                            Id = c.Id,
+                            HexValue = c.SecondaryHex != null
+                                       ? c.PrimaryHex + "/" + c.SecondaryHex
+                                       : c.PrimaryHex,
+                            ThemeColor = c.SecondaryColor != null
+                                         ? c.PrimaryColor + "/" + c.SecondaryColor
+                                         : c.PrimaryColor
+                        }).ToList(),
+                        Sizes = product.Sizes.Select(s => new SizeResponse
+                        {
+                            Id = s.Id,
+                            ProductSize = s.ProductSize
+                        }).ToList()
+                    };
+
+                    productResponse.Add(productList);
+                }
 
                 var pageResult = new PageResult<ProductListResponse>
                 {
-                    Data = productList,
+                    Data = productResponse,
                     TotalCount = totalCount
                 };
 
@@ -174,27 +196,49 @@ namespace BusinessLogicLayer.Services
                     customQuery
                 );
 
-                var productList = products.Select(p => new ProductListResponse
+                var productResponse = new List<ProductListResponse>();
+
+                foreach (var product in products )
                 {
-                    Id = p.Id,
-                    ImageUrl = p.ProductImages.First().ImageUrl,
-                    ProductName = p.ProductName,
-                    Price = p.Price,
-                    Colors = p.Colors.Select(c => new ColorResponse
+                    var orderDetail = await _unitOfWork.OrderDetailRepository.Queryable()
+                                            .Where(po => po.ProductId == product.Id &&
+                                                         po.Order.Status == Order.OrderStatus.Delivered)
+                                            .Include(po => po.Order)
+                                            .ToListAsync();
+
+                    var totalSold = orderDetail.Sum(oi => oi.Quantity);
+
+                    var productList = new ProductListResponse
                     {
-                        Id = c.Id,
-                        HexValue = c.SecondaryHex != null
-                                   ? c.PrimaryHex + "/" + c.SecondaryHex
-                                   : c.PrimaryHex,
-                        ThemeColor = c.SecondaryColor != null
-                                     ? c.PrimaryColor + "/" + c.SecondaryColor
-                                     : c.PrimaryColor
-                    }).ToList()
-                }).ToList();
+                        Id = product.Id,
+                        ImageUrl = product.ProductImages.First().ImageUrl,
+                        ProductName = product.ProductName,
+                        Quantity = product.Quantity,
+                        Price = product.Price,
+                        TotalSold = totalSold,
+                        Colors = product.Colors.Select(c => new ColorResponse
+                        {
+                            Id = c.Id,
+                            HexValue = c.SecondaryHex != null
+                                       ? c.PrimaryHex + "/" + c.SecondaryHex
+                                       : c.PrimaryHex,
+                            ThemeColor = c.SecondaryColor != null
+                                         ? c.PrimaryColor + "/" + c.SecondaryColor
+                                         : c.PrimaryColor
+                        }).ToList(),
+                        Sizes = product.Sizes.Select(s => new SizeResponse
+                        {
+                            Id = s.Id,
+                            ProductSize = s.ProductSize
+                        }).ToList()
+                    };
+
+                    productResponse.Add(productList);
+                }
 
                 var pageResult = new PageResult<ProductListResponse>
                 {
-                    Data = productList,
+                    Data = productResponse,
                     TotalCount = totalCount
                 };
 
@@ -268,9 +312,7 @@ namespace BusinessLogicLayer.Services
 
                 var image = product.ProductImages.Select(img => img.ImageUrl).ToList();
 
-                var color = await _unitOfWork.ColorRepository.GetAllAsync();
-
-                var colorResponse = color.Select(c => new ColorResponse
+                var colorResponse = product.Colors.Select(c => new ColorResponse
                 {
                     Id = c.Id,
                     HexValue = c.SecondaryHex != null
@@ -281,9 +323,7 @@ namespace BusinessLogicLayer.Services
                                      : c.PrimaryColor
                 }).ToList();
 
-                var size = await _unitOfWork.SizeRepository.GetAllAsync();
-
-                var sizeResponse = size.Select(s => new SizeResponse
+                var sizeResponse = product.Sizes.Select(s => new SizeResponse
                 {
                     Id = s.Id,
                     ProductSize = s.ProductSize

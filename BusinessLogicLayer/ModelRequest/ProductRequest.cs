@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -15,12 +16,25 @@ namespace BusinessLogicLayer.ModelRequest
 
     public class ProductListRequest
     {
+        [DefaultValue(null)]
         public string? ProductName { get; set; }
+
+        [DefaultValue(null)]
         public int? MinPrice { get; set; }
+
+        [DefaultValue(null)]
         public int? MaxPrice { get; set; }
+
+        [DefaultValue(1)]
         public int PageIndex { get; set; } = 1;
+
+        [DefaultValue(20)]
         public int PageSize { get; set; } = 20;
+
+        [DefaultValue("")]
         public string SortBy { get; set; } = "";
+
+        [DefaultValue(false)]
         public bool Descending { get; set; } = false;
     }
 
@@ -28,12 +42,26 @@ namespace BusinessLogicLayer.ModelRequest
     {
         [Required]
         public string Slug { get; set; }
+
+        [DefaultValue(null)]
         public string? ProductName { get; set; }
+
+        [DefaultValue(null)]
         public int? MinPrice { get; set; }
+
+        [DefaultValue(null)]
         public int? MaxPrice { get; set; }
+
+        [DefaultValue(1)]
         public int PageIndex { get; set; } = 1;
+
+        [DefaultValue(20)]
         public int PageSize { get; set; } = 20;
+
+        [DefaultValue("")]
         public string SortBy { get; set; } = "";
+
+        [DefaultValue(false)]
         public bool Descending { get; set; } = false;
     }
 
