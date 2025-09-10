@@ -92,7 +92,7 @@ namespace BusinessLogicLayer.Services
                     var productList = new ProductListResponse
                     {
                         Id = product.Id,
-                        ImageUrl = product.ProductImages.First().ImageUrl,
+                        ImageUrls = product.ProductImages.Take(2).Select(pi => pi.ImageUrl).ToList(),
                         ProductName = product.ProductName,
                         Quantity = product.Quantity,
                         Price = product.Price,
@@ -213,7 +213,7 @@ namespace BusinessLogicLayer.Services
                     var productList = new ProductListResponse
                     {
                         Id = product.Id,
-                        ImageUrl = product.ProductImages.First().ImageUrl,
+                        ImageUrls = product.ProductImages.Take(2).Select(pi => pi.ImageUrl).ToList(),
                         ProductName = product.ProductName,
                         Quantity = product.Quantity,
                         Price = product.Price,

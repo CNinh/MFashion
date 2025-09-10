@@ -33,10 +33,10 @@ namespace BusinessLogicLayer.ModelResponse
     {
         public int Id { get; set; }
         public string ProductName { get; set; }
-        public string ImageUrl { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
         public int TotalSold { get; set; }
+        public List<string> ImageUrls { get; set; } = new List<string>();
         public List<ColorResponse> Colors { get; set; } = new List<ColorResponse>();
         public List<SizeResponse> Sizes { get; set; } = new List<SizeResponse>();
     }
