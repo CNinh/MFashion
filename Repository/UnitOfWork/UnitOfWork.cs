@@ -35,6 +35,11 @@ namespace Repository.UnitOfWork
             TagRepository = new TagRepository(_context);
             DesignRepository = new DesignRepository(_context);
             CategoryRepository = new CategoryRepository(_context);
+            BlogCategoryRepository = new BlogCategoryRepository(_context);
+            BlogRepository = new BlogRepository(_context);
+            BlogImageRepository = new BlogImageRepository(_context);
+            BlogTagRepository = new BlogTagRepository(_context);
+            CommentRepository = new CommentRepository(_context);
         }
 
         public IAccountRepository AccountRepository { get; private set; }
@@ -53,6 +58,11 @@ namespace Repository.UnitOfWork
         public ITagRepository TagRepository { get; private set; }
         public IDesignRepository DesignRepository { get; private set; }
         public ICategoryRepository CategoryRepository { get; private set; }
+        public IBlogCategoryRepository BlogCategoryRepository { get; private set; }
+        public IBlogRepository BlogRepository { get; private set; }
+        public IBlogImageRepository BlogImageRepository { get; private set; }
+        public IBlogTagRepository BlogTagRepository { get; private set; }
+        public ICommentRepository CommentRepository { get; private set; }
 
         public void Dispose()
         {

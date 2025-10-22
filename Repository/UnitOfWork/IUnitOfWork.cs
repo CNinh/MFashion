@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
+﻿using DataAccessObject.Model;
+using Microsoft.EntityFrameworkCore.Storage;
 using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,12 @@ namespace Repository.UnitOfWork
         ITagRepository TagRepository { get; }
         IDesignRepository DesignRepository { get; }
         ICategoryRepository CategoryRepository { get; }
+        IBlogCategoryRepository BlogCategoryRepository { get; }
+        IBlogRepository BlogRepository { get; }
+        IBlogImageRepository BlogImageRepository { get; }
+        IBlogTagRepository BlogTagRepository { get; }
+        ICommentRepository CommentRepository { get; }
+
         int Save();
         Task CommitAsync();
         Task<IDbContextTransaction> BeginTransactionAsync();

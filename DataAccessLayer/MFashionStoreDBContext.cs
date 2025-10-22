@@ -301,11 +301,11 @@ namespace DataAccessObject
             );
 
             modelBuilder.Entity<BlogCategory>().HasData(
-                new BlogCategory { Id = 1, CategoryName = "Design Services" },
-                new BlogCategory { Id = 2, CategoryName = "HaruTheme" },
-                new BlogCategory { Id = 3, CategoryName = "Print Company" },
-                new BlogCategory { Id = 4, CategoryName = "Print Shop" },
-                new BlogCategory { Id = 5, CategoryName = "Uncategorized" }
+                new BlogCategory { Id = 1, CategoryName = "T-shirt" },
+                new BlogCategory { Id = 2, CategoryName = "Sweatshirt" },
+                new BlogCategory { Id = 3, CategoryName = "Hoodie" },
+                new BlogCategory { Id = 4, CategoryName = "Tank Top" },
+                new BlogCategory { Id = 5, CategoryName = "Long_sleeves" }
             );
 
             modelBuilder.Entity<BlogTag>().HasData(
