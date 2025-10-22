@@ -13,7 +13,7 @@ namespace BusinessLogicLayer.Interfaces
         Task<BaseResponse<PageResult<BlogResponse>>> GetAllBlog(BlogRequest request);
         Task<BaseResponse<BlogDetailResponse>> GetBlogById(int id);
         Task<BaseResponse> CreateBlog(int accountId, CreateBlogRequest request);
-        Task<BaseResponse> UpdateBlog(int id, UpdateBlogRequest);
+        Task<BaseResponse> UpdateBlog(int id, UpdateBlogRequest request);
         Task<BaseResponse> DeleteBlog(int id);
         Task<BaseResponse> Comment(int id, int accountId, CommmentRequest request);
     }
