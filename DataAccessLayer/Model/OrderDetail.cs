@@ -24,6 +24,7 @@ namespace DataAccessObject.Model
         public string Image { get; set; }
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
+        public string? Note { get; set; }
 
         public int ColorId { get; set; }
         public Color Color { get; set; }

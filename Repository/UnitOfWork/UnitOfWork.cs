@@ -28,6 +28,7 @@ namespace Repository.UnitOfWork
             ProductImageRepository = new ProductImageRepository(_context);
             OrderRepository = new OrderRepository(_context);
             OrderDetailRepository = new OrderDetailRepository(_context);
+            OrderAddessRepository = new OrderAddressRepository(_context);
             ColorRepository = new ColorRepository(_context);
             SizeRepository = new SizeRepository(_context);
             MaterialRepository = new MaterialRepository(_context);
@@ -51,6 +52,7 @@ namespace Repository.UnitOfWork
         public IProductImageRepository ProductImageRepository { get; private set; }
         public IOrderRepository OrderRepository { get; private set; }
         public IOrderDetailRepository OrderDetailRepository { get; private set; }
+        public IOrderAddessRepository OrderAddessRepository { get; private set; }
         public IColorRepository ColorRepository { get; private set; }
         public ISizeRepository SizeRepository { get; private set; }
         public IMaterialRepository MaterialRepository { get; private set; }

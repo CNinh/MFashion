@@ -27,7 +27,7 @@ namespace BusinessLogicLayer.ModelRequest
         [DefaultValue(20)]
         public int PageSize { get; set; } = 20;
 
-        [DefaultValue(null)]
+        [DefaultValue("")]
         public string SortBy { get; set; } = "";
 
         [DefaultValue(false)]

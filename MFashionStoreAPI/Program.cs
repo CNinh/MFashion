@@ -144,6 +144,8 @@ builder.Services.AddScoped<IUserSettingService, UserSettingService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IBlogService, BlogService>();
 
 // 9. Build the app
 var app = builder.Build();

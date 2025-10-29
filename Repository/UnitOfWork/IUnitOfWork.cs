@@ -20,6 +20,7 @@ namespace Repository.UnitOfWork
         IProductImageRepository ProductImageRepository { get; }
         IOrderRepository OrderRepository { get; }
         IOrderDetailRepository OrderDetailRepository { get; }
+        IOrderAddessRepository OrderAddessRepository { get; }
         IColorRepository ColorRepository { get; }
         ISizeRepository SizeRepository { get; }
         IMaterialRepository MaterialRepository { get; }

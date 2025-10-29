@@ -34,7 +34,7 @@ namespace MFashionStoreAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("getBlog")]
+        [HttpGet("getBlogById/{id}")]
         public async Task<IActionResult> GetBlogDetail(int id)
         {
             var result = await _blogService.GetBlogById(id);

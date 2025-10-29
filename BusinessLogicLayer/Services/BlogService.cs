@@ -42,7 +42,8 @@ namespace BusinessLogicLayer.Services
                 Expression<Func<Blog, object>> orderByExpression = request.SortBy?.ToLower() switch
                 {
                     "title" => b => b.Title,
-                    _ => b => b.PublishedDate
+                    "publisheddate" => b => b.PublishedDate,
+                    _ => b => b.Id
                 };
 
                 // Include entities

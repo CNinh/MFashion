@@ -1,4 +1,5 @@
-﻿using BusinessLogicLayer.ModelResponse;
+﻿using BusinessLogicLayer.ModelRequest;
+using BusinessLogicLayer.ModelResponse;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,11 @@ namespace BusinessLogicLayer.Interfaces
 {
     public interface IOrderService
     {
-        Task<BaseResponse> GetOrderList(int id);
-        Task<BaseResponse> GetOrderById(int id);
-        Task<BaseResponse> CreateOrder();
+        Task<BaseResponse<PageResult<OrderResponse>>> GetOrderList(OrderRequest request);
+        Task<BaseResponse<DetailResponse>> GetOrderById(int id);
+        Task<BaseResponse> CreateOrder(int id, CreateOrderRequest request);
+        Task<BaseResponse> ChangeAddress(int id, AddressRequest request);
         Task<BaseResponse> CancelOrder(int id);
+        Task<BaseResponse> UpdateStatus(int id);
     }
 }

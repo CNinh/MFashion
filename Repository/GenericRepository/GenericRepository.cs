@@ -70,6 +70,11 @@ namespace Repository.GenericRepository
             await _context.Set<T>().AddAsync(entity);
         }
 
+        public virtual void Attach(T entity)
+        {
+            _context.Set<T>().Attach(entity);
+        }
+
         public virtual void Update(T entity)
         {
             _context.Set<T>().Attach(entity);
@@ -81,7 +86,6 @@ namespace Repository.GenericRepository
             T entityToDelete = _context.Set<T>().Find(id);
             Delete(entityToDelete);
         }
-
 
         protected virtual void Delete(T entityToDelete)
         {

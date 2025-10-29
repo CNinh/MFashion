@@ -18,17 +18,17 @@ namespace DataAccessObject.Model
         public string? CompanyName { get; set; }
         public string Address { get; set; }
         public string? SubAddress { get; set; }
-        public string Country { get; set; }
-        public string? State { get; set; }
+        //public string Country { get; set; }
+        //public string? State { get; set; }
         public string? Province { get; set; }
-        public string City { get; set; }
+        public string? City { get; set; }
 
         [Column(TypeName = "nvarchar(12)")]
         public string PostCode { get; set; }
 
         [Column(TypeName = "varchar(20)")]
         public string PhoneNumber { get; set; }
-        public string Email { get; set; }
+        //public string Email { get; set; }
 
         public int OrderId { get; set; }
         public Order Order { get; set; }

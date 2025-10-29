@@ -14,6 +14,7 @@ namespace Repository.GenericRepository
         Task<IEnumerable<T>> GetAllAsync(int limit, Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, Expression<Func<T, object>>[] includeProperties = null);
         Task<T> GetByIdAsync(object id);
         Task InsertAsync(T entity);
+        void Attach(T entity);
         void Update(T entity);
         void Delete(object id);
         Task InsertRangeAsync(IEnumerable<T> entities);

@@ -16,6 +16,7 @@ namespace DataAccessObject.Model
 
         [Column(TypeName = "char(10)")]
         public string OrderCode { get; set; }
+        public int TotalItem { get; set; }
         public decimal TotalPrice { get; set; }
         public DateTime OrderDate { get; set; }
         public enum OrderStatus
@@ -23,7 +24,8 @@ namespace DataAccessObject.Model
             Waiting,
             Preparing,
             Delivery,
-            Delivered
+            Delivered,
+            Cancelled
         }
         public OrderStatus Status { get; set; }
 
